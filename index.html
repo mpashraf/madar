@@ -1301,7 +1301,7 @@
     function renderCustomers() {
       const term = (document.getElementById("customerSearchInput")?.value || "").toLowerCase();
       const filtered = state.customers.filter((c) =>
-        [c.customerCode, c.customerName, c.companyName, c.mobile, c.email].some((v) => (v || "").toLowerCase().includes(term))
+        [c.customerCode, c.customerName, c.companyName, c.mobile, c.email, c.nationality, c.passportNumber, c.civilId].some((v) => (v || "").toLowerCase().includes(term))
       );
 
       document.getElementById("customersTableBody").innerHTML = filtered.map((c) => `
@@ -1353,6 +1353,18 @@
             <input type="tel" id="custMobile" placeholder="+968 9XXXXXXX" value="${escapeHtml(existing?.mobile || "")}" required />
           </div>
           <div class="form-group">
+            <label>Nationality</label>
+            <input type="text" id="custNationality" placeholder="e.g. Omani, Indian" value="${escapeHtml(existing?.nationality || "")}" />
+          </div>
+          <div class="form-group">
+            <label>Passport Number</label>
+            <input type="text" id="custPassport" placeholder="Enter passport number" value="${escapeHtml(existing?.passportNumber || "")}" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label>Civil ID / Resident Card Number</label>
+            <input type="text" id="custCivilId" placeholder="Enter Civil ID / Resident Card number" value="${escapeHtml(existing?.civilId || "")}" autocomplete="off" />
+          </div>
+          <div class="form-group">
             <label>WhatsApp Number</label>
             <input type="tel" id="custWhatsapp" placeholder="+968 9XXXXXXX" value="${escapeHtml(existing?.whatsapp || "")}" />
           </div>
@@ -1387,6 +1399,9 @@
           companyName: document.getElementById("custCompany").value.trim(),
           mobile: normalizePhone(document.getElementById("custMobile").value),
           whatsapp: normalizePhone(document.getElementById("custWhatsapp").value || document.getElementById("custMobile").value),
+          nationality: document.getElementById("custNationality").value.trim(),
+          passportNumber: document.getElementById("custPassport").value.trim(),
+          civilId: document.getElementById("custCivilId").value.trim(),
           email: document.getElementById("custEmail").value.trim(),
           country: document.getElementById("custCountry").value.trim(),
           address: document.getElementById("custAddress").value.trim(),
