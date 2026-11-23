@@ -431,10 +431,54 @@
       .topbar h2 { font-size:1rem !important; }
       .topbar .badge, .topbar [data-action="open-customer-portal"] { display:none; }
       .card-header { align-items:flex-start; }
-      table { min-width:620px; }
       .auth-card, .portal-card { padding:22px 18px; }
     }
 
+
+    /* Phone layout: render table rows as stacked cards instead of forcing a wide grid. */
+    @media (max-width: 640px) {
+      html, body { width:100%; max-width:100%; overflow-x:hidden; }
+      .app-shell, .main-area, .content-container, .module-view, .card, .table-wrap {
+        min-width:0; max-width:100%;
+      }
+      .content-container { overflow-x:hidden; }
+      .table-wrap { overflow:visible; border:0; border-radius:0; background:transparent; }
+      .table-wrap table {
+        display:block; width:100% !important; min-width:0 !important;
+        max-width:100%; border:0; font-size:.82rem;
+      }
+      .table-wrap thead {
+        position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+        overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+      }
+      .table-wrap tbody { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; width:100%; }
+      .table-wrap tbody tr {
+        display:block; width:100%; min-width:0; padding:7px 11px;
+        background:#fff; border:1px solid var(--border); border-radius:11px;
+        box-shadow:0 2px 7px rgba(15,23,42,.035);
+      }
+      .table-wrap tbody td {
+        display:flex; align-items:flex-start; justify-content:space-between;
+        gap:12px; width:100%; min-width:0; padding:8px 2px;
+        border-bottom:1px solid #eef2f7; text-align:end;
+        white-space:normal; overflow-wrap:anywhere; word-break:break-word;
+      }
+      .table-wrap tbody td:last-child { border-bottom:0; }
+      .table-wrap tbody td::before {
+        content:attr(data-label); flex:0 0 39%; max-width:39%;
+        color:#64748b; font-size:.72rem; font-weight:700;
+        text-align:start; overflow-wrap:anywhere;
+      }
+      .table-wrap tbody td[colspan] { display:block; text-align:center; }
+      .table-wrap tbody td[colspan]::before { content:none; }
+      .table-wrap tbody td > * { max-width:100%; }
+      .table-wrap tbody td .btn, .table-wrap tbody td button { white-space:normal; }
+      .table-wrap tbody td .badge { white-space:normal; text-align:center; }
+      .card { overflow:hidden; }
+      .card-header > * { min-width:0; }
+      .card-header .btn { max-width:100%; }
+      input, select, textarea { max-width:100%; }
+    }
     @media print {
       .sidebar, .topbar, .no-print { display: none !important; }
       .main-area { margin: 0 !important; }
@@ -961,6 +1005,26 @@
       uploadBytes,
       getDownloadURL
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+
+    // Attach each table heading to its cells for mobile stacked-card rendering.
+    function applyMobileTableLabels(root = document) {
+      root.querySelectorAll(".table-wrap table").forEach((table) => {
+        const headers = Array.from(table.querySelectorAll("thead th")).map((th) => th.textContent.trim());
+        table.querySelectorAll("tbody tr").forEach((tr) => {
+          Array.from(tr.children).forEach((cell, index) => {
+            if (cell.tagName === "TD" && !cell.hasAttribute("colspan") && headers[index]) {
+              cell.setAttribute("data-label", headers[index]);
+            }
+          });
+        });
+      });
+    }
+    applyMobileTableLabels();
+    const mobileTableObserver = new MutationObserver(() => applyMobileTableLabels());
+    document.querySelectorAll(".table-wrap").forEach((wrap) => {
+      mobileTableObserver.observe(wrap, { childList: true, subtree: true });
+    });
 
     // 1. Firebase Configuration
     const firebaseConfig = {
