@@ -850,6 +850,26 @@
               </table>
             </div>
           </div>
+
+          <div class="card" style="margin-top:18px;">
+            <div class="card-header">
+              <h3 class="card-title">Demo Data Import / Restore</h3>
+            </div>
+            <p class="text-muted mb-3">Import your complete MADAR workspace from one JSON backup or demo data file. Customers, services, employees, files, workflow history, payments, notifications and application settings are supported.</p>
+            <div class="form-group mb-3">
+              <label for="globalJsonImport">Select MADAR JSON file</label>
+              <input type="file" id="globalJsonImport" accept=".json,application/json" />
+            </div>
+            <div id="globalJsonPreview" class="text-sm mb-3" style="padding:12px;background:var(--bg-app);border:1px solid var(--border);border-radius:8px;">
+              Choose a JSON file to preview the records before importing.
+            </div>
+            <div class="flex gap-2 items-center" style="flex-wrap:wrap;">
+              <button type="button" class="btn btn-primary" id="globalJsonImportBtn" disabled>Import All Data</button>
+              <button type="button" class="btn btn-outline" id="globalJsonClearBtn">Clear Selection</button>
+            </div>
+            <p class="text-xs mt-3" style="color:var(--warning);">Important: Import replaces documents that have matching IDs. It does not delete other existing documents. For a clean demo, use a separate Firebase project or export/backup your live data first. Firebase security rules must allow the signed-in user to write these collections.</p>
+            <div id="globalJsonImportStatus" class="text-sm mt-3" role="status" aria-live="polite"></div>
+          </div>
         </section>
       </main>
     </div>
@@ -890,7 +910,9 @@
       limit,
       onSnapshot,
       runTransaction,
-      serverTimestamp
+      serverTimestamp,
+      writeBatch,
+      Timestamp
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
     import {
       getStorage,
@@ -1070,6 +1092,13 @@
       onSnapshot(collection(db, "employees"), (snap) => {
         state.employees = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         renderEmployees();
+      }, (err) => {
+        console.error("MADAR employees listener failed:", err.code, err.message);
+        if (err.code === "permission-denied") {
+          showToast("Cannot read employees: Firestore rules are denying access. Check the rules in project madar-aed4e.", true);
+        } else {
+          showToast("Employee list error: " + (err.message || err.code), true);
+        }
       });
 
       onSnapshot(query(collection(db, "payments"), orderBy("createdAt", "desc")), (snap) => {
@@ -1824,19 +1853,42 @@
       `);
       document.getElementById("employeeForm").addEventListener("submit", async (e) => {
         e.preventDefault();
-        await addDoc(collection(db, "employees"), {
-          employeeCode: document.getElementById("empCode").value.trim(),
-          name: document.getElementById("empName").value.trim(),
-          mobile: document.getElementById("empMobile").value.trim(),
-          email: document.getElementById("empEmail").value.trim(),
-          designation: document.getElementById("empDesignation").value.trim(),
-          department: document.getElementById("empDept").value.trim(),
-          role: document.getElementById("empRole").value,
-          status: "Active",
-          createdAt: serverTimestamp()
-        });
-        closeModal();
-        showToast("Employee added");
+        const submitBtn = e.currentTarget.querySelector('button[type="submit"]');
+        if (!auth.currentUser) {
+          showToast("You are not signed in to Firebase. Please sign in again.", true);
+          return;
+        }
+        submitBtn.disabled = true;
+        try {
+          await addDoc(collection(db, "employees"), {
+            employeeCode: document.getElementById("empCode").value.trim(),
+            name: document.getElementById("empName").value.trim(),
+            mobile: document.getElementById("empMobile").value.trim(),
+            email: document.getElementById("empEmail").value.trim(),
+            designation: document.getElementById("empDesignation").value.trim(),
+            department: document.getElementById("empDept").value.trim(),
+            role: document.getElementById("empRole").value,
+            status: "Active",
+            createdByUid: auth.currentUser.uid,
+            createdByEmail: auth.currentUser.email || "",
+            createdAt: serverTimestamp()
+          });
+          closeModal();
+          showToast("Employee added successfully");
+        } catch (err) {
+          console.error("MADAR employee save failed:", {
+            code: err.code, message: err.message,
+            projectId: firebaseConfig.projectId,
+            signedInUid: auth.currentUser?.uid,
+            signedInEmail: auth.currentUser?.email
+          });
+          const msg = err.code === "permission-denied"
+            ? "Firestore denied this save. Confirm Firestore Rules are published to project madar-aed4e and allow request.auth != null."
+            : (err.message || "Unable to save employee.");
+          showToast(msg, true);
+        } finally {
+          submitBtn.disabled = false;
+        }
       });
     }
 
@@ -2341,6 +2393,129 @@
       await setDoc(doc(db, "app_settings", "general"), { ...state.settings, updatedAt: serverTimestamp() }, { merge: true });
       showToast("System settings saved");
     });
+
+    // Global Settings: import a complete MADAR workspace from one JSON file.
+    const MADAR_IMPORT_COLLECTIONS = new Set([
+      "customers", "services", "employees", "files",
+      "file_history", "payments", "notifications", "app_settings"
+    ]);
+    let selectedMadarImport = null;
+
+    function convertImportedDates(value, key = "") {
+      if (Array.isArray(value)) return value.map((item) => convertImportedDates(item, key));
+      if (value && typeof value === "object") {
+        const converted = {};
+        for (const [childKey, childValue] of Object.entries(value)) {
+          converted[childKey] = convertImportedDates(childValue, childKey);
+        }
+        return converted;
+      }
+      if (
+        typeof value === "string" &&
+        /^\d{4}-\d{2}-\d{2}T/.test(value) &&
+        /(At|DateTime)$/i.test(key)
+      ) {
+        const date = new Date(value);
+        if (!Number.isNaN(date.getTime())) return Timestamp.fromDate(date);
+      }
+      return value;
+    }
+
+    function getMadarImportCounts(payload) {
+      const counts = {};
+      for (const [name, records] of Object.entries(payload.collections || {})) {
+        if (MADAR_IMPORT_COLLECTIONS.has(name) && Array.isArray(records)) {
+          counts[name] = records.length;
+        }
+      }
+      return counts;
+    }
+
+    document.getElementById("globalJsonImport")?.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      selectedMadarImport = null;
+      const preview = document.getElementById("globalJsonPreview");
+      const importButton = document.getElementById("globalJsonImportBtn");
+      const status = document.getElementById("globalJsonImportStatus");
+      status.textContent = "";
+      importButton.disabled = true;
+      if (!file) {
+        preview.textContent = "Choose a JSON file to preview the records before importing.";
+        return;
+      }
+      try {
+        const payload = JSON.parse(await file.text());
+        if (!payload || typeof payload !== "object" || !payload.collections || typeof payload.collections !== "object") {
+          throw new Error('Invalid MADAR backup. Expected a "collections" object.');
+        }
+        const counts = getMadarImportCounts(payload);
+        const invalid = Object.entries(payload.collections).filter(([name, records]) =>
+          MADAR_IMPORT_COLLECTIONS.has(name) &&
+          (!Array.isArray(records) || records.some((record) =>
+            !record || typeof record.id !== "string" || !record.id.trim() ||
+            !record.data || typeof record.data !== "object" || Array.isArray(record.data)
+          ))
+        );
+        if (invalid.length) throw new Error("Some collections contain invalid records or missing document IDs.");
+        const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+        if (!total) throw new Error("No supported MADAR collections were found in this JSON file.");
+        selectedMadarImport = payload;
+        preview.innerHTML = `<strong>${total} records found</strong><ul style="margin:8px 0 0 18px;">${Object.entries(counts).map(([name, count]) => `<li>${name}: ${count}</li>`).join("")}</ul>`;
+        importButton.disabled = false;
+      } catch (error) {
+        preview.textContent = error.message || "Unable to read this JSON file.";
+        status.textContent = "Please select a valid MADAR JSON backup.";
+      }
+    });
+
+    document.getElementById("globalJsonClearBtn")?.addEventListener("click", () => {
+      selectedMadarImport = null;
+      document.getElementById("globalJsonImport").value = "";
+      document.getElementById("globalJsonImportBtn").disabled = true;
+      document.getElementById("globalJsonPreview").textContent = "Choose a JSON file to preview the records before importing.";
+      document.getElementById("globalJsonImportStatus").textContent = "";
+    });
+
+    document.getElementById("globalJsonImportBtn")?.addEventListener("click", async () => {
+      if (!selectedMadarImport) return;
+      const counts = getMadarImportCounts(selectedMadarImport);
+      const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+      const confirmed = window.confirm(
+        `Import ${total} MADAR records into this Firebase project?\\n\\nDocuments with matching IDs will be replaced. Other documents will remain unchanged.`
+      );
+      if (!confirmed) return;
+
+      const button = document.getElementById("globalJsonImportBtn");
+      const status = document.getElementById("globalJsonImportStatus");
+      button.disabled = true;
+      let imported = 0;
+      try {
+        for (const [collectionName, records] of Object.entries(selectedMadarImport.collections || {})) {
+          if (!MADAR_IMPORT_COLLECTIONS.has(collectionName) || !Array.isArray(records)) continue;
+          for (let offset = 0; offset < records.length; offset += 400) {
+            const batch = writeBatch(db);
+            const chunk = records.slice(offset, offset + 400);
+            for (const record of chunk) {
+              batch.set(
+                doc(db, collectionName, record.id),
+                convertImportedDates(record.data)
+              );
+            }
+            await batch.commit();
+            imported += chunk.length;
+            status.textContent = `Importing… ${imported} of ${total} records completed.`;
+          }
+        }
+        status.textContent = `Import completed successfully. ${imported} records were imported. The live screens will refresh automatically.`;
+        showToast(`Imported ${imported} MADAR records`);
+      } catch (error) {
+        status.textContent = `Import stopped after ${imported} records: ${error.message || error}. Some records may already have been imported.`;
+        showToast("Import failed. Check Firestore permissions.", true);
+      } finally {
+        button.disabled = !selectedMadarImport;
+      }
+    });
+
   </script>
 </body>
 </html>
