@@ -393,13 +393,46 @@
     .toast.error { border-inline-start-color: var(--danger); }
 
     .mobile-menu-btn { display: none; }
+    .drawer-backdrop { display: none; }
+
+    /* App-like responsive navigation for phones and tablets */
     @media (max-width: 960px) {
-      .sidebar { transform: translateX(-100%); }
-      html[dir="rtl"] .sidebar { transform: translateX(100%); }
+      .sidebar { width: min(84vw, 310px); transform: translateX(-105%); box-shadow: var(--shadow-lg); z-index: 120; }
+      html[dir="rtl"] .sidebar { transform: translateX(105%); }
       .sidebar.open { transform: translateX(0); }
+      .drawer-backdrop { display:block; position:fixed; inset:0; background:rgba(6,18,36,.48); opacity:0; visibility:hidden; transition:opacity .2s ease,visibility .2s ease; z-index:110; }
+      .drawer-backdrop.visible { opacity:1; visibility:visible; }
       .main-area { margin-inline-start: 0; }
       .mobile-menu-btn { display: inline-flex; }
       .dashboard-split { grid-template-columns: 1fr; }
+      .content-container { padding: 18px 16px 104px; }
+      .topbar { padding: 0 16px; height: 60px; }
+      .mobile-bottom-nav { position:fixed; inset-inline:0; bottom:0; z-index:100; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:2px; padding:8px 6px calc(8px + env(safe-area-inset-bottom)); background:rgba(255,255,255,.97); border-top:1px solid var(--border); box-shadow:0 -5px 18px rgba(11,31,58,.08); backdrop-filter:blur(12px); }
+      .mobile-bottom-nav button { min-width:0; border:0; background:transparent; color:#64748b; border-radius:10px; padding:5px 2px 4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font:inherit; cursor:pointer; }
+      .mobile-bottom-nav button .mobile-nav-icon { font-size:1.18rem; line-height:1.2; }
+      .mobile-bottom-nav button .mobile-nav-label { font-size:.64rem; line-height:1.15; font-weight:700; white-space:nowrap; }
+      .mobile-bottom-nav button.active { color:var(--teal-600); background:var(--teal-50); }
+      .kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+      .kpi-card { padding:13px; }
+      .kpi-value { font-size:1.3rem; }
+      .card { padding:15px; }
+      .form-grid { grid-template-columns:1fr; }
+      .modal-box { padding:18px; max-height:88vh; }
+      .toast-container { bottom:82px; inset-inline:12px; align-items:stretch; }
+      .toast { max-width:none; }
+    }
+    @media (min-width: 961px) { .mobile-bottom-nav { display:none; } }
+    @media (max-width: 420px) {
+      .content-container { padding-inline:12px; }
+      .kpi-grid { gap:8px; }
+      .kpi-card { padding:11px; }
+      .kpi-label { font-size:.68rem; }
+      .kpi-value { font-size:1.18rem; }
+      .topbar h2 { font-size:1rem !important; }
+      .topbar .badge, .topbar [data-action="open-customer-portal"] { display:none; }
+      .card-header { align-items:flex-start; }
+      table { min-width:620px; }
+      .auth-card, .portal-card { padding:22px 18px; }
     }
 
     @media print {
@@ -499,6 +532,7 @@
 
   <!-- 3. INTERNAL SAAS WORKSPACE -->
   <div id="workspaceView" class="app-shell hidden">
+    <div id="drawerBackdrop" class="drawer-backdrop" data-action="toggle-sidebar" aria-label="Close navigation menu"></div>
     <aside id="appSidebar" class="sidebar">
       <div class="sidebar-brand">
         <div class="brand-logo">M</div>
@@ -873,6 +907,13 @@
         </section>
       </main>
     </div>
+    <nav class="mobile-bottom-nav no-print" aria-label="Quick navigation">
+      <button type="button" class="active" data-nav="dashboard" aria-label="Dashboard"><span class="mobile-nav-icon">⌂</span><span class="mobile-nav-label">Home</span></button>
+      <button type="button" data-nav="files" aria-label="Files"><span class="mobile-nav-icon">▤</span><span class="mobile-nav-label">Files</span></button>
+      <button type="button" data-nav="customers" aria-label="Customers"><span class="mobile-nav-icon">♙</span><span class="mobile-nav-label">Customers</span></button>
+      <button type="button" data-nav="quotations" aria-label="Payments"><span class="mobile-nav-icon">﷼</span><span class="mobile-nav-label">Payments</span></button>
+      <button type="button" data-action="toggle-sidebar" aria-label="More menu"><span class="mobile-nav-icon">☰</span><span class="mobile-nav-label">More</span></button>
+    </nav>
   </div>
 
   <!-- UNIVERSAL MODAL -->
@@ -1056,7 +1097,7 @@
       document.querySelectorAll(".module-view").forEach((sec) => {
         sec.classList.toggle("hidden", sec.id !== `view-${modName}`);
       });
-      document.querySelectorAll(".nav-item").forEach((btn) => {
+      document.querySelectorAll("[data-nav]").forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.nav === modName);
       });
       const activeBtn = document.querySelector(`.nav-item[data-nav="${modName}"]`);
@@ -1064,6 +1105,7 @@
         document.getElementById("pageHeaderTitle").textContent = activeBtn.textContent;
       }
       document.getElementById("appSidebar").classList.remove("open");
+      document.getElementById("drawerBackdrop")?.classList.remove("visible");
     }
 
     // 6. Dashboard & Realtime Listeners
@@ -2317,9 +2359,14 @@
           }
           showView(state.user ? "workspaceView" : "loginView");
           break;
-        case "toggle-sidebar":
-          document.getElementById("appSidebar").classList.toggle("open");
+        case "toggle-sidebar": {
+          const drawer = document.getElementById("appSidebar");
+          const backdrop = document.getElementById("drawerBackdrop");
+          const willOpen = !drawer.classList.contains("open");
+          drawer.classList.toggle("open", willOpen);
+          backdrop?.classList.toggle("visible", willOpen);
           break;
+        }
         case "close-modal": closeModal(); break;
         case "install-pwa": await installPWA(); break;
         case "open-customer-modal": openCustomerModal(); break;
