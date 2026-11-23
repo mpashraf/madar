@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#0b1f3a" />
+  <meta name="description" content="MADAR (مدار) - Smart Document & File Tracking Management System for Al Hamad Translation Works, Oman." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b1f3a'/%3E%3Ctext x='50' y='67' font-family='Arial,sans-serif' font-size='54' font-weight='bold' fill='%2314b8a6' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href='data:application/manifest+json,{"name":"MADAR - Smart Document & File Tracking","short_name":"MADAR مدار","start_url":"./","scope":"./","display":"standalone","background_color":"#0b1f3a","theme_color":"#0b1f3a","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27%3E%3Crect width=%27512%27 height=%27512%27 rx=%2796%27 fill=%27%230b1f3a%27/%3E%3Ctext x=%27256%27 y=%27335%27 font-family=%27Arial,sans-serif%27 font-size=%27270%27 font-weight=%27bold%27 fill=%27%2314b8a6%27 text-anchor=%27middle%27%3EM%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <title>MADAR (مدار) | Smart Document & File Tracking</title>
+
+  <style>
+    :root {
+      --navy-950: #061224;
+      --navy-900: #0b1f3a;
+      --navy-800: #132d52;
+      --navy-700: #1e4070;
+      --teal-600: #0d9488;
+      --teal-500: #14b8a6;
+      --teal-100: #ccfbf1;
+      --teal-50: #f0fdfa;
+      --bg-app: #f4f6f9;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --info: #2563eb;
+      --info-bg: #eff6ff;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 3px rgba(11, 31, 58, 0.06);
+      --shadow-md: 0 4px 14px rgba(11, 31, 58, 0.08);
+      --shadow-lg: 0 12px 30px rgba(11, 31, 58, 0.14);
+      --sidebar-width: 264px;
+      --topbar-height: 66px;
+      --font-en: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-ar: 'Cairo', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-en);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    html[dir="rtl"] body { font-family: var(--font-ar); }
+
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-4 { margin-top: 16px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-4 { margin-bottom: 16px; }
+    .text-sm { font-size: 0.85rem; }
+    .text-xs { font-size: 0.75rem; }
+    .text-muted { color: var(--text-muted); }
+    .font-bold { font-weight: 700; }
+    .font-semi { font-weight: 600; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      font-family: inherit;
+      text-decoration: none;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--navy-900); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--navy-800); }
+    .btn-teal { background: var(--teal-600); color: #fff; }
+    .btn-teal:hover:not(:disabled) { background: var(--teal-500); }
+    .btn-outline { background: #fff; border-color: var(--border); color: var(--text-main); }
+    .btn-outline:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 11px; font-size: 0.8rem; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.82rem; font-weight: 600; color: var(--navy-900); }
+    input, select, textarea {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text-main);
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--teal-600);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-navy { background: #e2e8f0; color: var(--navy-900); }
+    .badge-teal { background: var(--teal-100); color: #0f766e; }
+    .badge-info { background: var(--info-bg); color: var(--info); }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card-title { font-size: 1.05rem; font-weight: 700; color: var(--navy-900); }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: start;
+    }
+    th {
+      background: #f8fafc;
+      color: var(--navy-900);
+      font-weight: 700;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:hover td { background: #f8fafc; }
+
+    .app-shell { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--navy-900);
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      inset-inline-start: 0;
+      z-index: 40;
+      transition: transform 0.25s ease;
+    }
+    .sidebar-brand {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--teal-500), var(--teal-600));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: start;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+    .nav-item.active { background: var(--teal-600); color: #fff; font-weight: 600; }
+    .sidebar-footer {
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .main-area {
+      flex: 1;
+      margin-inline-start: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .content-container { padding: 24px; max-width: 1480px; width: 100%; margin: 0 auto; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .kpi-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      border-inline-start: 4px solid var(--navy-900);
+    }
+    .kpi-card.teal { border-inline-start-color: var(--teal-600); }
+    .kpi-card.warning { border-inline-start-color: var(--warning); }
+    .kpi-card.danger { border-inline-start-color: var(--danger); }
+    .kpi-card.success { border-inline-start-color: var(--success); }
+    .kpi-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+    .kpi-value { font-size: 1.55rem; font-weight: 700; color: var(--navy-900); margin-top: 6px; }
+
+    .dashboard-split {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    .public-wrapper {
+      min-height: 100vh;
+      background: linear-gradient(145deg, var(--navy-950) 0%, var(--navy-900) 55%, var(--navy-800) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: #fff;
+      width: 100%;
+      max-width: 440px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-lg);
+    }
+    .portal-card {
+      background: #fff;
+      width: 100%;
+      max-width: 760px;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .timeline {
+      position: relative;
+      padding-inline-start: 24px;
+      border-inline-start: 2px solid var(--teal-500);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .timeline-item { position: relative; }
+    .timeline-dot {
+      position: absolute;
+      inset-inline-start: -31px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--teal-600);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--teal-600);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 18, 36, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 780px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      inset-inline-end: 20px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      background: var(--navy-900);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      font-size: 0.875rem;
+      border-inline-start: 4px solid var(--teal-500);
+      max-width: 380px;
+    }
+    .toast.error { border-inline-start-color: var(--danger); }
+
+    .mobile-menu-btn { display: none; }
+    @media (max-width: 960px) {
+      .sidebar { transform: translateX(-100%); }
+      html[dir="rtl"] .sidebar { transform: translateX(100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-area { margin-inline-start: 0; }
+      .mobile-menu-btn { display: inline-flex; }
+      .dashboard-split { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .sidebar, .topbar, .no-print { display: none !important; }
+      .main-area { margin: 0 !important; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- 1. PUBLIC CUSTOMER TRACKING PORTAL -->
+  <section id="customerPortalView" class="public-wrapper hidden">
+    <div class="portal-card">
+      <div class="flex justify-between items-center mb-4" style="border-bottom:1px solid var(--border);padding-bottom:14px;">
+        <div class="flex items-center gap-3">
+          <div class="brand-logo">M</div>
+          <div>
+            <h1 style="font-size:1.25rem;color:var(--navy-900);">MADAR | مدار</h1>
+            <p class="text-xs text-muted">Al Hamad Translation Works, Oman — Live File Tracking</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn btn-outline btn-sm" data-action="copy-tracking-link">Copy Link</button>
+          <button type="button" class="btn btn-outline btn-sm" data-action="toggle-lang">عربي / EN</button>
+          <button type="button" class="btn btn-primary btn-sm" data-action="show-staff-login" data-i18n="staffLoginBtn">Staff Login</button>
+        </div>
+      </div>
+
+      <form id="portalLookupForm" class="form-grid">
+        <div class="form-group">
+          <label for="trackRefInput" data-i18n="fileRefLabel">File Reference Number</label>
+          <input type="text" id="trackRefInput" placeholder="e.g. MAD-2026-00001" required />
+        </div>
+        <div class="form-group">
+          <label for="trackMobileInput" data-i18n="regMobileLabel">Registered Mobile Number</label>
+          <input type="tel" id="trackMobileInput" placeholder="+968 9XXXXXXX" required />
+        </div>
+        <div class="form-group full">
+          <button type="submit" class="btn btn-teal" data-i18n="requestOtpBtn">Request OTP Verification</button>
+        </div>
+      </form>
+
+      <form id="portalOtpForm" class="form-grid hidden mt-4" style="background:var(--teal-50);padding:16px;border-radius:8px;border:1px solid var(--teal-100);">
+        <div class="form-group full">
+          <p class="text-sm font-semi" style="color:var(--navy-900);" id="otpSentMessage">Enter the 6-digit verification code sent to your registered mobile.</p>
+          <div id="firebaseRecaptchaContainer"></div>
+        </div>
+        <div class="form-group">
+          <label for="portalOtpCode">6-Digit OTP Code</label>
+          <input type="text" id="portalOtpCode" maxlength="6" placeholder="123456" required />
+        </div>
+        <div class="form-group" style="justify-content:flex-end;">
+          <button type="submit" class="btn btn-primary">Verify & View File</button>
+        </div>
+      </form>
+
+      <div id="portalResultBox" class="hidden mt-4"></div>
+
+      <p class="text-xs text-muted mt-4" style="text-align:center;">
+        Al Hamad Translation Works, Sultanate of Oman • Powered by <strong>MADAR</strong> (BitPro Technologies)
+      </p>
+    </div>
+  </section>
+
+  <!-- 2. STAFF & ADMIN LOGIN VIEW -->
+  <section id="loginView" class="public-wrapper">
+    <div class="auth-card">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-3">
+          <div class="brand-logo">M</div>
+          <div>
+            <h1 style="font-size:1.35rem;color:var(--navy-900);">MADAR <span style="color:var(--teal-600);">مدار</span></h1>
+            <p class="text-xs text-muted">Smart Document & File Tracking</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" data-action="toggle-lang">عربي / EN</button>
+      </div>
+
+      <div style="background:#f8fafc;padding:10px 12px;border-radius:6px;margin-bottom:18px;border:1px solid var(--border);">
+        <div class="text-xs font-bold" style="color:var(--navy-900);">Al Hamad Translation Works, Oman</div>
+        <div class="text-xs text-muted">Authorized Administrator & Staff Portal</div>
+      </div>
+
+      <form id="loginForm" class="flex" style="flex-direction:column;gap:14px;">
+        <div class="form-group">
+          <label for="loginEmail" data-i18n="emailLabel">Work Email</label>
+          <input type="email" id="loginEmail" placeholder="admin@alhamadtranslation.om" required />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword" data-i18n="passwordLabel">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width:100%;padding:11px;" data-i18n="signInBtn">
+          Sign In to Workspace
+        </button>
+      </form>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
+        <p class="text-xs text-muted mb-4">Are you a client checking your translation or attestation file?</p>
+        <button type="button" class="btn btn-teal" style="width:100%;" data-action="open-customer-portal" data-i18n="trackPortalBtn">
+          Open Customer Tracking Portal
+        </button>
+      </div>
+
+      <p class="text-xs text-muted mt-4" style="text-align:center;">Developed by BitPro Technologies</p>
+    </div>
+  </section>
+
+  <!-- 3. INTERNAL SAAS WORKSPACE -->
+  <div id="workspaceView" class="app-shell hidden">
+    <aside id="appSidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo">M</div>
+        <div>
+          <div style="font-weight:800;font-size:1.15rem;color:#fff;letter-spacing:0.02em;">MADAR <span style="color:var(--teal-500);">مدار</span></div>
+          <div style="font-size:0.7rem;color:#94a3b8;">Al Hamad Translation Works</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav">
+        <button type="button" class="nav-item active" data-nav="dashboard" data-i18n="navDashboard">Dashboard</button>
+        <button type="button" class="nav-item" data-nav="files" data-i18n="navFiles">File Registration & Tracking</button>
+        <button type="button" class="nav-item" data-nav="customers" data-i18n="navCustomers">Customer Management</button>
+        <button type="button" class="nav-item" data-nav="quotations" data-i18n="navPayments">Quotations & Payments</button>
+        <button type="button" class="nav-item admin-only" data-nav="services" data-i18n="navServices">Service Categories</button>
+        <button type="button" class="nav-item admin-only" data-nav="employees" data-i18n="navEmployees">Employee Management</button>
+        <button type="button" class="nav-item" data-nav="reports" data-i18n="navReports">Reports & Exports</button>
+        <button type="button" class="nav-item admin-only" data-nav="settings" data-i18n="navSettings">Settings & Notifications</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="currentUserBadge" class="font-semi" style="color:#fff;margin-bottom:4px;">User</div>
+        <div id="currentRoleBadge" class="text-xs" style="color:var(--teal-500);margin-bottom:10px;">Role</div>
+        <button type="button" id="pwaInstallBtn" class="btn btn-teal btn-sm hidden" style="width:100%;margin-bottom:8px;" data-action="install-pwa">
+          Install MADAR App
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" style="width:100%;background:transparent;color:#fff;border-color:rgba(255,255,255,0.2);" data-action="logout" data-i18n="logoutBtn">
+          Secure Logout
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar no-print">
+        <div class="flex items-center gap-3">
+          <button type="button" class="btn btn-outline btn-sm mobile-menu-btn" data-action="toggle-sidebar">☰</button>
+          <h2 id="pageHeaderTitle" style="font-size:1.15rem;color:var(--navy-900);">Dashboard</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="badge badge-navy">OMR</span>
+          <button type="button" class="btn btn-outline btn-sm" data-action="open-customer-portal">Public Portal</button>
+          <button type="button" class="btn btn-outline btn-sm" data-action="toggle-lang">عربي / EN</button>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="module-view">
+          <div class="kpi-grid" id="dashboardKpiGrid"></div>
+
+          <div class="dashboard-split">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Files</h3>
+                <button type="button" class="btn btn-primary btn-sm" data-nav-jump="files">+ Register File</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Ref #</th>
+                      <th>Customer</th>
+                      <th>Service</th>
+                      <th>Status</th>
+                      <th>Delivery</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashRecentFilesBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Upcoming Delivery Deadlines</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Ref #</th>
+                      <th>Title</th>
+                      <th>Expected Date</th>
+                      <th>Priority</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashDeadlinesBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Pending Payments (OMR)</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Ref #</th>
+                      <th>Customer</th>
+                      <th>Total</th>
+                      <th>Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashPendingPayBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Service-wise Statistics & Today's Activities</h3>
+              </div>
+              <div id="dashServiceStatsBox" class="mb-4"></div>
+              <h4 class="text-sm font-bold mb-2" style="color:var(--navy-900);">Today's Activity Log</h4>
+              <div id="dashTodayActivitiesBox" class="text-sm text-muted"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FILES -->
+        <section id="view-files" class="module-view hidden">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">File Registration & Workflow Control</h3>
+              <div class="flex gap-2">
+                <button type="button" class="btn btn-outline btn-sm" data-action="export-files-csv">Export CSV / Excel</button>
+                <button type="button" class="btn btn-outline btn-sm" data-action="print-page">Print List</button>
+                <button type="button" class="btn btn-teal btn-sm" data-action="open-new-file-modal">+ Register New File</button>
+              </div>
+            </div>
+
+            <div class="form-grid mb-4">
+              <div class="form-group">
+                <input type="search" id="fileSearchInput" placeholder="Search Ref #, Customer, Title..." />
+              </div>
+              <div class="form-group">
+                <select id="fileStatusFilter">
+                  <option value="">All Workflow Stages</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <select id="fileServiceFilter">
+                  <option value="">All Service Categories</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <select id="filePriorityFilter">
+                  <option value="">All Priorities</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Urgent">Urgent</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-sort="referenceNumber">Reference #</th>
+                    <th data-sort="customerName">Customer</th>
+                    <th data-sort="serviceName">Service</th>
+                    <th data-sort="fileTitle">Title / Languages</th>
+                    <th data-sort="expectedDeliveryDate">Expected Delivery</th>
+                    <th data-sort="assignedEmployeeName">Assigned To</th>
+                    <th data-sort="currentStatus">Workflow Stage</th>
+                    <th data-sort="balanceAmount">Balance (OMR)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="filesTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="flex justify-between items-center mt-4">
+              <span id="filesPaginationInfo" class="text-xs text-muted">Showing 0 records</span>
+              <div class="flex gap-2">
+                <button type="button" class="btn btn-outline btn-sm" id="filesPrevPage">Previous</button>
+                <button type="button" class="btn btn-outline btn-sm" id="filesNextPage">Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CUSTOMERS -->
+        <section id="view-customers" class="module-view hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Customer Directory</h3>
+              <div class="flex gap-2">
+                <input type="search" id="customerSearchInput" placeholder="Search Name, Company, Mobile..." />
+                <button type="button" class="btn btn-teal btn-sm" data-action="open-customer-modal">+ Add Customer</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Customer ID</th>
+                    <th>Type</th>
+                    <th>Name / Company</th>
+                    <th>Mobile / WhatsApp</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="customersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUOTATIONS & PAYMENTS -->
+        <section id="view-quotations" class="module-view hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Quotations, Partial Payments & Receipts (OMR)</h3>
+              <button type="button" class="btn btn-teal btn-sm" data-action="open-payment-modal">+ Record Quotation / Payment</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Receipt / Quote #</th>
+                    <th>File Ref #</th>
+                    <th>Customer</th>
+                    <th>Total (OMR)</th>
+                    <th>Paid (OMR)</th>
+                    <th>Balance (OMR)</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Receipt</th>
+                  </tr>
+                </thead>
+                <tbody id="paymentsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section id="view-services" class="module-view hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Configurable Service Categories (Common 10-Step Workflow)</h3>
+              <button type="button" class="btn btn-teal btn-sm" data-action="open-service-modal">+ Add Service Category</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Service Name (English)</th>
+                    <th>Service Name (Arabic)</th>
+                    <th>Default VAT (%)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="servicesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- EMPLOYEES -->
+        <section id="view-employees" class="module-view hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Staff & Translator Workload Management</h3>
+              <button type="button" class="btn btn-teal btn-sm" data-action="open-employee-modal">+ Register Employee</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Designation & Dept</th>
+                    <th>Role</th>
+                    <th>Active Files</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="employeesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- REPORTS -->
+        <section id="view-reports" class="module-view hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Executive Reports & Financial Summary</h3>
+              <div class="flex gap-2">
+                <button type="button" class="btn btn-outline btn-sm" data-action="export-files-csv">Download Full CSV</button>
+                <button type="button" class="btn btn-primary btn-sm" data-action="print-page">Print Report</button>
+              </div>
+            </div>
+            <div id="reportsSummaryContainer"></div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="view-settings" class="module-view hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">System Configuration & Notification Queue</h3>
+            </div>
+            <form id="appSettingsForm" class="form-grid mb-4">
+              <div class="form-group">
+                <label>Organization Name</label>
+                <input type="text" id="setOrgName" value="Al Hamad Translation Works, Oman" />
+              </div>
+              <div class="form-group">
+                <label>Default Oman VAT (%)</label>
+                <input type="number" step="0.1" id="setDefaultVat" value="5" />
+              </div>
+              <div class="form-group">
+                <label>Enable Automated WhatsApp / SMS / Email Queue</label>
+                <select id="setNotifyEnabled">
+                  <option value="true">Enabled (Dispatch via Cloud Functions)</option>
+                  <option value="false">Disabled</option>
+                </select>
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+              </div>
+            </form>
+
+            <h4 class="font-bold mb-2">Outbound Notification Queue (WhatsApp / SMS / Email Triggers)</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Channel</th>
+                    <th>Recipient</th>
+                    <th>Trigger Event</th>
+                    <th>File Ref</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="notificationsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- UNIVERSAL MODAL -->
+  <div id="appModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-4" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+        <h3 id="modalTitle" class="card-title">Modal</h3>
+        <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">✕</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      RecaptchaVerifier,
+      signInWithPhoneNumber
+    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs,
+      setDoc,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      query,
+      where,
+      orderBy,
+      limit,
+      onSnapshot,
+      runTransaction,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+    // 1. Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDM7T2a_2jnoGWMMAbqwRIp5GH0wCvvY8",
+      authDomain: "madar-aed4e.firebaseapp.com",
+      projectId: "madar-aed4e",
+      storageBucket: "madar-aed4e.firebasestorage.app",
+      messagingSenderId: "115309048267",
+      appId: "1:115309048267:web:b3b2ed08ead1ff821ac64e",
+      measurementId: "G-M0G382V17V"
+    };
+
+    // 2. Firebase Initialization
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // 3. Application State
+    const WORKFLOW_STAGES = [
+      "Customer Registration",
+      "Document Receiving",
+      "Quotation & Pricing",
+      "File Registration",
+      "Translator / Staff Assignment",
+      "Processing in Progress",
+      "Quality Checking",
+      "Completed & Ready",
+      "Customer Delivery",
+      "Payment & File Closure"
+    ];
+
+    const DEFAULT_SERVICES = [
+      { id: "srv_1", nameEn: "Certified Translation", nameAr: "الترجمة المعتمدة", vat: 5, active: true },
+      { id: "srv_2", nameEn: "Turkish Certified Translation", nameAr: "الترجمة التركية المعتمدة", vat: 5, active: true },
+      { id: "srv_3", nameEn: "Ministry Submissions", nameAr: "معاملات الوزارات", vat: 5, active: true },
+      { id: "srv_4", nameEn: "Tax & Compliance Audits", nameAr: "التدقيق الضريبي والامتثال", vat: 5, active: true },
+      { id: "srv_5", nameEn: "Court & Legal Processing", nameAr: "المعاملات القضائية والقانونية", vat: 5, active: true },
+      { id: "srv_6", nameEn: "International Business Transactions", nameAr: "المعاملات التجارية الدولية", vat: 5, active: true }
+    ];
+
+    const state = {
+      user: null,
+      profile: null,
+      lang: "en",
+      currentModule: "dashboard",
+      customers: [],
+      services: [],
+      files: [],
+      employees: [],
+      payments: [],
+      notifications: [],
+      settings: { orgName: "Al Hamad Translation Works, Oman", defaultVat: 5, notifyEnabled: true },
+      fileFilter: { search: "", status: "", service: "", priority: "", sortKey: "createdAt", sortAsc: false, page: 1, pageSize: 12 },
+      deferredInstallPrompt: null,
+      portalConfirmationResult: null,
+      portalPendingFileId: null
+    };
+
+    // 4. Authentication
+    onAuthStateChanged(auth, async (firebaseUser) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isTrackRoute = window.location.hash === "#track" || urlParams.get("track") === "1";
+
+      if (!firebaseUser) {
+        state.user = null;
+        state.profile = null;
+        if (isTrackRoute) {
+          showView("customerPortalView");
+          if (urlParams.get("ref")) {
+            document.getElementById("trackRefInput").value = urlParams.get("ref");
+          }
+        } else {
+          showView("loginView");
+        }
+        return;
+      }
+
+      if (firebaseUser.isAnonymous || (!firebaseUser.email && firebaseUser.phoneNumber)) {
+        return;
+      }
+
+      state.user = firebaseUser;
+      const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
+      if (userSnap.exists()) {
+        state.profile = userSnap.data();
+      } else {
+        state.profile = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.email.split("@")[0],
+          role: "admin",
+          status: "Active",
+          createdAt: serverTimestamp()
+        };
+        await setDoc(doc(db, "users", firebaseUser.uid), state.profile);
+      }
+
+      if (state.profile.status === "Inactive") {
+        await signOut(auth);
+        showToast("Account deactivated. Contact Administrator.", true);
+        return;
+      }
+
+      applyRolePermissions();
+      document.getElementById("currentUserBadge").textContent = state.profile.name || firebaseUser.email;
+      document.getElementById("currentRoleBadge").textContent = state.profile.role.toUpperCase();
+      showView("workspaceView");
+      await seedInitialServicesIfEmpty();
+      attachRealtimeListeners();
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const pass = document.getElementById("loginPassword").value;
+      const btn = document.getElementById("loginSubmitBtn");
+      btn.disabled = true;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        showToast("Welcome to MADAR Workspace");
+      } catch (err) {
+        if (err.code === "auth/unauthorized-domain") {
+          showToast(`Add "${window.location.hostname}" to Firebase Auth > Settings > Authorized domains.`, true);
+        } else {
+          showToast(err.message || "Authentication failed", true);
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function handleLogout() {
+      await signOut(auth);
+      showToast("Signed out securely");
+    }
+
+    // 5. Role & Permission Management
+    function isAdmin() {
+      return state.profile?.role === "admin";
+    }
+
+    function applyRolePermissions() {
+      document.querySelectorAll(".admin-only").forEach((el) => {
+        el.classList.toggle("hidden", !isAdmin());
+      });
+    }
+
+    // 6. Navigation
+    function showView(viewId) {
+      ["loginView", "customerPortalView", "workspaceView"].forEach((id) => {
+        document.getElementById(id).classList.toggle("hidden", id !== viewId);
+      });
+    }
+
+    function switchModule(modName) {
+      if ((modName === "services" || modName === "employees" || modName === "settings") && !isAdmin()) {
+        showToast("Administrator privileges required", true);
+        return;
+      }
+      state.currentModule = modName;
+      document.querySelectorAll(".module-view").forEach((sec) => {
+        sec.classList.toggle("hidden", sec.id !== `view-${modName}`);
+      });
+      document.querySelectorAll(".nav-item").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.nav === modName);
+      });
+      const activeBtn = document.querySelector(`.nav-item[data-nav="${modName}"]`);
+      if (activeBtn) {
+        document.getElementById("pageHeaderTitle").textContent = activeBtn.textContent;
+      }
+      document.getElementById("appSidebar").classList.remove("open");
+    }
+
+    // 7. Dashboard
+    function attachRealtimeListeners() {
+      onSnapshot(collection(db, "customers"), (snap) => {
+        state.customers = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        renderCustomers();
+        renderDashboard();
+      });
+
+      onSnapshot(collection(db, "services"), (snap) => {
+        state.services = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        renderServices();
+        populateServiceDropdowns();
+        renderDashboard();
+      });
+
+      onSnapshot(query(collection(db, "files"), orderBy("createdAt", "desc")), (snap) => {
+        let allFiles = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (!isAdmin() && state.profile?.employeeId) {
+          allFiles = allFiles.filter((f) => f.assignedEmployeeId === state.profile.employeeId || f.createdBy === state.user.uid);
+        }
+        state.files = allFiles;
+        renderFiles();
+        renderDashboard();
+        renderEmployees();
+        renderReports();
+      });
+
+      onSnapshot(collection(db, "employees"), (snap) => {
+        state.employees = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        renderEmployees();
+      });
+
+      onSnapshot(query(collection(db, "payments"), orderBy("createdAt", "desc")), (snap) => {
+        state.payments = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        renderPayments();
+        renderDashboard();
+      });
+
+      onSnapshot(query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(30)), (snap) => {
+        state.notifications = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        renderNotifications();
+      });
+    }
+
+    function renderDashboard() {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const totalCustomers = state.customers.length;
+      const totalFiles = state.files.length;
+      const newFiles = state.files.filter((f) => ["Customer Registration", "Document Receiving", "File Registration"].includes(f.currentStatus)).length;
+      const processing = state.files.filter((f) => ["Translator / Staff Assignment", "Processing in Progress"].includes(f.currentStatus)).length;
+      const qc = state.files.filter((f) => f.currentStatus === "Quality Checking").length;
+      const ready = state.files.filter((f) => f.currentStatus === "Completed & Ready").length;
+      const completed = state.files.filter((f) => ["Customer Delivery", "Payment & File Closure"].includes(f.currentStatus)).length;
+      const overdue = state.files.filter((f) => f.expectedDeliveryDate && f.expectedDeliveryDate < todayStr && !["Customer Delivery", "Payment & File Closure"].includes(f.currentStatus)).length;
+      const pendingPayments = state.files.reduce((acc, f) => acc + (Number(f.balanceAmount) || 0), 0);
+      const totalRevenue = state.files.reduce((acc, f) => acc + (Number(f.advancePayment) || 0), 0);
+
+      const kpis = [
+        { label: "Total Customers", val: totalCustomers, cls: "" },
+        { label: "Total Files", val: totalFiles, cls: "teal" },
+        { label: "New Files", val: newFiles, cls: "" },
+        { label: "Processing", val: processing, cls: "teal" },
+        { label: "Quality Checking", val: qc, cls: "warning" },
+        { label: "Ready for Delivery", val: ready, cls: "success" },
+        { label: "Completed Files", val: completed, cls: "success" },
+        { label: "Overdue Files", val: overdue, cls: "danger" },
+        { label: "Pending Payments", val: formatOMR(pendingPayments), cls: "warning" },
+        { label: "Collected Revenue", val: formatOMR(totalRevenue), cls: "teal" }
+      ];
+
+      document.getElementById("dashboardKpiGrid").innerHTML = kpis
+        .map((k) => `<div class="kpi-card ${k.cls}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.val}</div></div>`)
+        .join("");
+
+      document.getElementById("dashRecentFilesBody").innerHTML = state.files.slice(0, 6).map((f) => `
+        <tr>
+          <td class="font-bold">${escapeHtml(f.referenceNumber)}</td>
+          <td>${escapeHtml(f.customerName)}</td>
+          <td>${escapeHtml(f.serviceName)}</td>
+          <td><span class="badge badge-teal">${escapeHtml(f.currentStatus)}</span></td>
+          <td>${escapeHtml(f.expectedDeliveryDate || "-")}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="5" class="text-muted">No files registered yet.</td></tr>`;
+
+      const upcoming = [...state.files]
+        .filter((f) => !["Customer Delivery", "Payment & File Closure"].includes(f.currentStatus))
+        .sort((a, b) => (a.expectedDeliveryDate || "9999").localeCompare(b.expectedDeliveryDate || "9999"))
+        .slice(0, 6);
+
+      document.getElementById("dashDeadlinesBody").innerHTML = upcoming.map((f) => `
+        <tr>
+          <td class="font-bold">${escapeHtml(f.referenceNumber)}</td>
+          <td>${escapeHtml(f.fileTitle)}</td>
+          <td>${escapeHtml(f.expectedDeliveryDate || "-")}</td>
+          <td><span class="badge ${f.priority === "Urgent" ? "badge-danger" : "badge-navy"}">${escapeHtml(f.priority)}</span></td>
+        </tr>
+      `).join("") || `<tr><td colspan="4" class="text-muted">No active deadlines.</td></tr>`;
+
+      const pendingList = state.files.filter((f) => Number(f.balanceAmount) > 0).slice(0, 6);
+      document.getElementById("dashPendingPayBody").innerHTML = pendingList.map((f) => `
+        <tr>
+          <td class="font-bold">${escapeHtml(f.referenceNumber)}</td>
+          <td>${escapeHtml(f.customerName)}</td>
+          <td>${formatOMR(f.quotationAmount)}</td>
+          <td class="font-bold" style="color:var(--danger);">${formatOMR(f.balanceAmount)}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="4" class="text-muted">No pending balances.</td></tr>`;
+
+      const serviceCounts = {};
+      state.files.forEach((f) => {
+        serviceCounts[f.serviceName] = (serviceCounts[f.serviceName] || 0) + 1;
+      });
+      document.getElementById("dashServiceStatsBox").innerHTML = Object.entries(serviceCounts)
+        .map(([srv, cnt]) => `<div class="flex justify-between text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);"><span>${escapeHtml(srv)}</span><strong>${cnt} files</strong></div>`)
+        .join("") || `<p class="text-sm text-muted">No service activity recorded yet.</p>`;
+
+      const todayActs = state.notifications.slice(0, 5);
+      document.getElementById("dashTodayActivitiesBox").innerHTML = todayActs
+        .map((n) => `<div style="padding:5px 0;border-bottom:1px dashed var(--border);">• <strong>${escapeHtml(n.fileRef || "")}</strong>: ${escapeHtml(n.trigger)} (${escapeHtml(n.channel)})</div>`)
+        .join("") || "No activity logs recorded today.";
+    }
+
+    // 8. Customer Management
+    function renderCustomers() {
+      const term = (document.getElementById("customerSearchInput")?.value || "").toLowerCase();
+      const filtered = state.customers.filter((c) =>
+        [c.customerCode, c.customerName, c.companyName, c.mobile, c.email].some((v) => (v || "").toLowerCase().includes(term))
+      );
+
+      document.getElementById("customersTableBody").innerHTML = filtered.map((c) => `
+        <tr>
+          <td class="font-bold">${escapeHtml(c.customerCode || c.id.slice(0, 6))}</td>
+          <td><span class="badge badge-navy">${escapeHtml(c.customerType)}</span></td>
+          <td>
+            <div class="font-semi">${escapeHtml(c.customerName)}</div>
+            ${c.companyName ? `<div class="text-xs text-muted">${escapeHtml(c.companyName)}</div>` : ""}
+          </td>
+          <td>
+            <div>${escapeHtml(c.mobile)}</div>
+            <div class="text-xs text-muted">WA: ${escapeHtml(c.whatsapp || c.mobile)}</div>
+          </td>
+          <td>${escapeHtml(c.email || "-")}</td>
+          <td>${escapeHtml(c.country || "Oman")}</td>
+          <td>
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-outline btn-sm" data-action="view-customer" data-id="${c.id}">History</button>
+              <button type="button" class="btn btn-outline btn-sm" data-action="edit-customer" data-id="${c.id}">Edit</button>
+              ${isAdmin() ? `<button type="button" class="btn btn-danger btn-sm" data-action="delete-customer" data-id="${c.id}">Delete</button>` : ""}
+            </div>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="7" class="text-muted">No customers found. Click "+ Add Customer" to begin.</td></tr>`;
+    }
+
+    function openCustomerModal(existing = null) {
+      openModal(existing ? "Edit Customer" : "Register New Customer", `
+        <form id="customerForm" class="form-grid">
+          <input type="hidden" id="custDocId" value="${existing?.id || ""}" />
+          <div class="form-group">
+            <label>Customer Type</label>
+            <select id="custType" required>
+              <option value="Individual" ${existing?.customerType === "Individual" ? "selected" : ""}>Individual</option>
+              <option value="Company" ${existing?.customerType === "Company" ? "selected" : ""}>Company</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Customer Full Name *</label>
+            <input type="text" id="custName" value="${escapeHtml(existing?.customerName || "")}" required />
+          </div>
+          <div class="form-group">
+            <label>Company Name (If Applicable)</label>
+            <input type="text" id="custCompany" value="${escapeHtml(existing?.companyName || "")}" />
+          </div>
+          <div class="form-group">
+            <label>Mobile Number (with Country Code) *</label>
+            <input type="tel" id="custMobile" placeholder="+968 9XXXXXXX" value="${escapeHtml(existing?.mobile || "")}" required />
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" id="custWhatsapp" placeholder="+968 9XXXXXXX" value="${escapeHtml(existing?.whatsapp || "")}" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="custEmail" value="${escapeHtml(existing?.email || "")}" />
+          </div>
+          <div class="form-group">
+            <label>Country</label>
+            <input type="text" id="custCountry" value="${escapeHtml(existing?.country || "Oman")}" />
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="custAddress" value="${escapeHtml(existing?.address || "")}" />
+          </div>
+          <div class="form-group full">
+            <label>Notes</label>
+            <textarea id="custNotes" rows="2">${escapeHtml(existing?.notes || "")}</textarea>
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">Save Customer Record</button>
+          </div>
+        </form>
+      `);
+
+      document.getElementById("customerForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const docId = document.getElementById("custDocId").value;
+        const payload = {
+          customerType: document.getElementById("custType").value,
+          customerName: document.getElementById("custName").value.trim(),
+          companyName: document.getElementById("custCompany").value.trim(),
+          mobile: normalizePhone(document.getElementById("custMobile").value),
+          whatsapp: normalizePhone(document.getElementById("custWhatsapp").value || document.getElementById("custMobile").value),
+          email: document.getElementById("custEmail").value.trim(),
+          country: document.getElementById("custCountry").value.trim(),
+          address: document.getElementById("custAddress").value.trim(),
+          notes: document.getElementById("custNotes").value.trim(),
+          updatedAt: serverTimestamp()
+        };
+
+        if (docId) {
+          await updateDoc(doc(db, "customers", docId), payload);
+          showToast("Customer updated");
+        } else {
+          payload.customerCode = `CUS-${Date.now().toString().slice(-6)}`;
+          payload.registrationDate = new Date().toISOString().slice(0, 10);
+          payload.createdAt = serverTimestamp();
+          await addDoc(collection(db, "customers"), payload);
+          showToast("Customer registered");
+        }
+        closeModal();
+      });
+    }
+
+    function viewCustomerHistory(customerId) {
+      const cust = state.customers.find((c) => c.id === customerId);
+      const custFiles = state.files.filter((f) => f.customerId === customerId);
+      openModal(`Customer File History — ${escapeHtml(cust?.customerName || "")}`, `
+        <p class="text-sm mb-4"><strong>Mobile:</strong> ${escapeHtml(cust?.mobile || "")} | <strong>Company:</strong> ${escapeHtml(cust?.companyName || "Individual")}</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ref #</th><th>Service</th><th>Title</th><th>Status</th><th>Balance</th></tr></thead>
+            <tbody>
+              ${custFiles.map((f) => `<tr><td>${f.referenceNumber}</td><td>${f.serviceName}</td><td>${f.fileTitle}</td><td>${f.currentStatus}</td><td>${formatOMR(f.balanceAmount)}</td></tr>`).join("") || `<tr><td colspan="5">No files registered for this customer.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      `);
+    }
+
+    // 9. Service Management
+    async function seedInitialServicesIfEmpty() {
+      const snap = await getDocs(collection(db, "services"));
+      if (snap.empty && isAdmin()) {
+        for (const s of DEFAULT_SERVICES) {
+          await setDoc(doc(db, "services", s.id), { ...s, createdAt: serverTimestamp() });
+        }
+      }
+    }
+
+    function renderServices() {
+      document.getElementById("servicesTableBody").innerHTML = state.services.map((s, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td class="font-semi">${escapeHtml(s.nameEn)}</td>
+          <td>${escapeHtml(s.nameAr)}</td>
+          <td>${s.vat ?? 5}%</td>
+          <td><span class="badge ${s.active ? "badge-success" : "badge-danger"}">${s.active ? "Active" : "Disabled"}</span></td>
+          <td>
+            <button type="button" class="btn btn-outline btn-sm" data-action="toggle-service" data-id="${s.id}">Toggle Status</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function populateServiceDropdowns() {
+      const filterEl = document.getElementById("fileServiceFilter");
+      if (filterEl) {
+        filterEl.innerHTML = `<option value="">All Service Categories</option>` +
+          state.services.map((s) => `<option value="${escapeHtml(s.nameEn)}">${escapeHtml(s.nameEn)}</option>`).join("");
+      }
+      const statusFilter = document.getElementById("fileStatusFilter");
+      if (statusFilter && statusFilter.options.length <= 1) {
+        WORKFLOW_STAGES.forEach((st) => {
+          const opt = document.createElement("option");
+          opt.value = st;
+          opt.textContent = st;
+          statusFilter.appendChild(opt);
+        });
+      }
+    }
+
+    function openServiceModal() {
+      openModal("Add Configurable Service Category", `
+        <form id="serviceForm" class="form-grid">
+          <div class="form-group">
+            <label>Service Title (English) *</label>
+            <input type="text" id="srvNameEn" required />
+          </div>
+          <div class="form-group">
+            <label>Service Title (Arabic) *</label>
+            <input type="text" id="srvNameAr" dir="rtl" required />
+          </div>
+          <div class="form-group">
+            <label>Default VAT (%)</label>
+            <input type="number" step="0.1" id="srvVat" value="5" required />
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">Save Service Category</button>
+          </div>
+        </form>
+      `);
+      document.getElementById("serviceForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await addDoc(collection(db, "services"), {
+          nameEn: document.getElementById("srvNameEn").value.trim(),
+          nameAr: document.getElementById("srvNameAr").value.trim(),
+          vat: Number(document.getElementById("srvVat").value),
+          active: true,
+          createdAt: serverTimestamp()
+        });
+        closeModal();
+        showToast("Service category created");
+      });
+    }
+
+    // 10. File Management
+    async function generateNextFileReference() {
+      const year = new Date().getFullYear();
+      const counterRef = doc(db, "app_settings", `file_counter_${year}`);
+      const nextNum = await runTransaction(db, async (tx) => {
+        const snap = await tx.get(counterRef);
+        const current = snap.exists() ? (snap.data().seq || 0) : 0;
+        const updated = current + 1;
+        tx.set(counterRef, { seq: updated, year, updatedAt: serverTimestamp() }, { merge: true });
+        return updated;
+      });
+      return `MAD-${year}-${String(nextNum).padStart(5, "0")}`;
+    }
+
+    function renderFiles() {
+      const { search, status, service, priority, sortKey, sortAsc, page, pageSize } = state.fileFilter;
+      const term = search.toLowerCase();
+
+      let list = state.files.filter((f) => {
+        const matchSearch = !term || [f.referenceNumber, f.customerName, f.fileTitle, f.customerMobile].some((v) => (v || "").toLowerCase().includes(term));
+        const matchStatus = !status || f.currentStatus === status;
+        const matchService = !service || f.serviceName === service;
+        const matchPriority = !priority || f.priority === priority;
+        return matchSearch && matchStatus && matchService && matchPriority;
+      });
+
+      list.sort((a, b) => {
+        const valA = a[sortKey] ?? "";
+        const valB = b[sortKey] ?? "";
+        if (valA < valB) return sortAsc ? -1 : 1;
+        if (valA > valB) return sortAsc ? 1 : -1;
+        return 0;
+      });
+
+      const total = list.length;
+      const start = (page - 1) * pageSize;
+      const paginated = list.slice(start, start + pageSize);
+
+      document.getElementById("filesPaginationInfo").textContent = `Showing ${paginated.length} of ${total} files (Page ${page})`;
+
+      document.getElementById("filesTableBody").innerHTML = paginated.map((f) => `
+        <tr>
+          <td class="font-bold" style="color:var(--navy-900);">${escapeHtml(f.referenceNumber)}</td>
+          <td>
+            <div class="font-semi">${escapeHtml(f.customerName)}</div>
+            <div class="text-xs text-muted">${escapeHtml(f.customerMobile || "")}</div>
+          </td>
+          <td>${escapeHtml(f.serviceName)}</td>
+          <td>
+            <div>${escapeHtml(f.fileTitle)}</div>
+            <div class="text-xs text-muted">${escapeHtml(f.sourceLanguage || "")} → ${escapeHtml(f.targetLanguage || "")}</div>
+          </td>
+          <td>${escapeHtml(f.expectedDeliveryDate || "-")}</td>
+          <td>${escapeHtml(f.assignedEmployeeName || "Unassigned")}</td>
+          <td><span class="badge badge-teal">${escapeHtml(f.currentStatus)}</span></td>
+          <td class="font-bold">${formatOMR(f.balanceAmount)}</td>
+          <td>
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-primary btn-sm" data-action="manage-file" data-id="${f.id}">Manage / Workflow</button>
+            </div>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="9" class="text-muted">No matching file records found.</td></tr>`;
+    }
+
+    function openNewFileModal() {
+      const custOptions = state.customers.map((c) => `<option value="${c.id}">${escapeHtml(c.customerName)} (${escapeHtml(c.mobile)})</option>`).join("");
+      const srvOptions = state.services.filter((s) => s.active).map((s) => `<option value="${s.id}">${escapeHtml(s.nameEn)} — ${escapeHtml(s.nameAr)}</option>`).join("");
+      const empOptions = `<option value="">-- Unassigned --</option>` + state.employees.filter((e) => e.status === "Active").map((e) => `<option value="${e.id}">${escapeHtml(e.name)} (${escapeHtml(e.designation)})</option>`).join("");
+
+      openModal("Register New Document / Translation File", `
+        <form id="newFileForm" class="form-grid">
+          <div class="form-group">
+            <label>Customer *</label>
+            <select id="nfCustomer" required>
+              <option value="">Select Registered Customer</option>
+              ${custOptions}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Service Category *</label>
+            <select id="nfService" required>${srvOptions}</select>
+          </div>
+          <div class="form-group">
+            <label>File Title *</label>
+            <input type="text" id="nfTitle" placeholder="e.g. Commercial Registration & Degree Attestation" required />
+          </div>
+          <div class="form-group">
+            <label>Document Type</label>
+            <input type="text" id="nfDocType" placeholder="Certificate, Contract, Audit Report..." />
+          </div>
+          <div class="form-group">
+            <label>Source Language</label>
+            <input type="text" id="nfSourceLang" value="Arabic" />
+          </div>
+          <div class="form-group">
+            <label>Target Language</label>
+            <input type="text" id="nfTargetLang" value="English" />
+          </div>
+          <div class="form-group">
+            <label>Received Date *</label>
+            <input type="date" id="nfReceivedDate" value="${new Date().toISOString().slice(0, 10)}" required />
+          </div>
+          <div class="form-group">
+            <label>Expected Delivery Date *</label>
+            <input type="date" id="nfDeliveryDate" required />
+          </div>
+          <div class="form-group">
+            <label>Assign Translator / Staff</label>
+            <select id="nfEmployee">${empOptions}</select>
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="nfPriority">
+              <option value="Normal">Normal</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quotation Amount (OMR)</label>
+            <input type="number" step="0.001" id="nfQuoteAmount" value="0.000" />
+          </div>
+          <div class="form-group">
+            <label>Advance Payment (OMR)</label>
+            <input type="number" step="0.001" id="nfAdvance" value="0.000" />
+          </div>
+          <div class="form-group">
+            <label>Initial Workflow Stage</label>
+            <select id="nfStatus">
+              ${WORKFLOW_STAGES.map((st, idx) => `<option value="${st}" ${idx === 3 ? "selected" : ""}>${idx + 1}. ${st}</option>`).join("")}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Customer-Visible Remarks</label>
+            <input type="text" id="nfCustRemarks" placeholder="Visible on customer tracking portal" />
+          </div>
+          <div class="form-group full">
+            <label>Internal Staff Remarks (Confidential)</label>
+            <textarea id="nfInternalRemarks" rows="2"></textarea>
+          </div>
+          <div class="form-group full">
+            <button type="submit" id="saveNewFileBtn" class="btn btn-teal">Generate Reference & Register File</button>
+          </div>
+        </form>
+      `);
+
+      document.getElementById("newFileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("saveNewFileBtn");
+        btn.disabled = true;
+        try {
+          const custId = document.getElementById("nfCustomer").value;
+          const cust = state.customers.find((c) => c.id === custId);
+          const srvId = document.getElementById("nfService").value;
+          const srv = state.services.find((s) => s.id === srvId);
+          const empId = document.getElementById("nfEmployee").value;
+          const emp = state.employees.find((em) => em.id === empId);
+
+          const quoteAmt = Number(document.getElementById("nfQuoteAmount").value) || 0;
+          const advAmt = Number(document.getElementById("nfAdvance").value) || 0;
+          const balance = Math.max(0, quoteAmt - advAmt);
+          const payStatus = quoteAmt === 0 ? "Unpaid" : balance === 0 ? "Paid" : advAmt > 0 ? "Partially Paid" : "Unpaid";
+          const initialStatus = document.getElementById("nfStatus").value;
+          const refNumber = await generateNextFileReference();
+
+          const fileDoc = await addDoc(collection(db, "files"), {
+            referenceNumber: refNumber,
+            customerId: custId,
+            customerName: cust?.customerName || "",
+            customerMobile: cust?.mobile || "",
+            serviceId: srvId,
+            serviceName: srv?.nameEn || "",
+            serviceNameAr: srv?.nameAr || "",
+            fileTitle: document.getElementById("nfTitle").value.trim(),
+            documentType: document.getElementById("nfDocType").value.trim(),
+            sourceLanguage: document.getElementById("nfSourceLang").value.trim(),
+            targetLanguage: document.getElementById("nfTargetLang").value.trim(),
+            receivedDate: document.getElementById("nfReceivedDate").value,
+            expectedDeliveryDate: document.getElementById("nfDeliveryDate").value,
+            assignedEmployeeId: empId || "",
+            assignedEmployeeName: emp?.name || "Unassigned",
+            priority: document.getElementById("nfPriority").value,
+            quotationAmount: quoteAmt,
+            advancePayment: advAmt,
+            balanceAmount: balance,
+            paymentStatus: payStatus,
+            currentStatus: initialStatus,
+            internalRemarks: document.getElementById("nfInternalRemarks").value.trim(),
+            customerRemarks: document.getElementById("nfCustRemarks").value.trim(),
+            attachments: [],
+            createdBy: state.user.uid,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+
+          await addDoc(collection(db, "file_history"), {
+            fileId: fileDoc.id,
+            referenceNumber: refNumber,
+            previousStatus: "None",
+            newStatus: initialStatus,
+            updatedBy: state.profile.name || state.user.email,
+            customerRemarks: document.getElementById("nfCustRemarks").value.trim() || "File registered in MADAR system.",
+            internalRemarks: document.getElementById("nfInternalRemarks").value.trim(),
+            createdAt: serverTimestamp()
+          });
+
+          await queueNotification("New File Registration", refNumber, cust?.mobile, cust?.email);
+
+          closeModal();
+          showToast(`File Registered: ${refNumber}`);
+        } catch (err) {
+          showToast(err.message, true);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+
+    // 11. File Status & History + 14. Document Upload
+    async function openManageFileModal(fileId) {
+      const file = state.files.find((f) => f.id === fileId);
+      if (!file) return;
+
+      const histSnap = await getDocs(query(collection(db, "file_history"), where("fileId", "==", fileId)));
+      const historyList = histSnap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+
+      const empOptions = `<option value="">-- Unassigned --</option>` + state.employees.map((e) =>
+        `<option value="${e.id}" ${file.assignedEmployeeId === e.id ? "selected" : ""}>${escapeHtml(e.name)}</option>`
+      ).join("");
+
+      openModal(`Manage File: ${escapeHtml(file.referenceNumber)}`, `
+        <div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid var(--border);margin-bottom:16px;">
+          <div class="flex justify-between">
+            <strong>${escapeHtml(file.fileTitle)}</strong>
+            <span class="badge badge-teal">${escapeHtml(file.currentStatus)}</span>
+          </div>
+          <div class="text-xs text-muted mt-2">
+            Customer: ${escapeHtml(file.customerName)} (${escapeHtml(file.customerMobile)}) • Service: ${escapeHtml(file.serviceName)} • Balance: <strong>${formatOMR(file.balanceAmount)}</strong>
+          </div>
+        </div>
+
+        <form id="updateWorkflowForm" class="form-grid mb-4">
+          <div class="form-group">
+            <label>Advance Workflow Stage (10-Step Standard)</label>
+            <select id="wfNextStatus">
+              ${WORKFLOW_STAGES.map((st, i) => `<option value="${st}" ${file.currentStatus === st ? "selected" : ""}>${i + 1}. ${st}</option>`).join("")}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Assigned Employee</label>
+            <select id="wfAssignEmp">${empOptions}</select>
+          </div>
+          <div class="form-group">
+            <label>Customer-Visible Remarks (Shown on Public Portal)</label>
+            <input type="text" id="wfCustRemarks" placeholder="Update visible to client..." />
+          </div>
+          <div class="form-group">
+            <label>Internal Remarks (Staff Only)</label>
+            <input type="text" id="wfIntRemarks" placeholder="Confidential internal note..." />
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">Record Status Update (Immutable History)</button>
+          </div>
+        </form>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;" />
+
+        <h4 class="font-bold mb-2">Secure Document Repository (Firebase Storage)</h4>
+        <form id="uploadDocForm" class="form-grid mb-4">
+          <div class="form-group">
+            <label>Document Category</label>
+            <select id="docCategory">
+              <option value="Original Documents">Original Documents</option>
+              <option value="Working Documents">Working Documents</option>
+              <option value="Reviewed Documents">Reviewed Documents</option>
+              <option value="Final Documents">Final Documents (Client Downloadable)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Select File (PDF, JPG, PNG, DOC, DOCX)</label>
+            <input type="file" id="docFileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required />
+          </div>
+          <div class="form-group full">
+            <button type="submit" id="uploadDocBtn" class="btn btn-teal btn-sm">Upload Authorized Document</button>
+          </div>
+        </form>
+
+        <div class="mb-4">
+          ${(file.attachments || []).map((att) => `
+            <div class="flex justify-between items-center text-sm" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
+              <span><span class="badge badge-navy">${escapeHtml(att.category)}</span> ${escapeHtml(att.name)}</span>
+              <a href="${att.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Open Secure File</a>
+            </div>
+          `).join("") || `<p class="text-xs text-muted">No documents uploaded yet.</p>`}
+        </div>
+
+        <h4 class="font-bold mb-2">Audit Trail & Status History</h4>
+        <div class="timeline">
+          ${historyList.map((h) => `
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="text-sm font-bold">${escapeHtml(h.previousStatus)} → <span style="color:var(--teal-600);">${escapeHtml(h.newStatus)}</span></div>
+              <div class="text-xs text-muted">By ${escapeHtml(h.updatedBy)} • ${formatTimestamp(h.createdAt)}</div>
+              ${h.customerRemarks ? `<div class="text-xs mt-2"><strong>Client Note:</strong> ${escapeHtml(h.customerRemarks)}</div>` : ""}
+              ${h.internalRemarks ? `<div class="text-xs text-muted"><strong>Internal:</strong> ${escapeHtml(h.internalRemarks)}</div>` : ""}
+            </div>
+          `).join("")}
+        </div>
+      `);
+
+      document.getElementById("updateWorkflowForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const newStatus = document.getElementById("wfNextStatus").value;
+        const empId = document.getElementById("wfAssignEmp").value;
+        const emp = state.employees.find((em) => em.id === empId);
+        const custRem = document.getElementById("wfCustRemarks").value.trim();
+        const intRem = document.getElementById("wfIntRemarks").value.trim();
+
+        await updateDoc(doc(db, "files", fileId), {
+          currentStatus: newStatus,
+          assignedEmployeeId: empId,
+          assignedEmployeeName: emp?.name || "Unassigned",
+          customerRemarks: custRem || file.customerRemarks,
+          internalRemarks: intRem || file.internalRemarks,
+          updatedAt: serverTimestamp()
+        });
+
+        await addDoc(collection(db, "file_history"), {
+          fileId,
+          referenceNumber: file.referenceNumber,
+          previousStatus: file.currentStatus,
+          newStatus,
+          updatedBy: state.profile.name || state.user.email,
+          customerRemarks: custRem,
+          internalRemarks: intRem,
+          createdAt: serverTimestamp()
+        });
+
+        if (newStatus === "Completed & Ready") {
+          await queueNotification("File Ready for Collection", file.referenceNumber, file.customerMobile, "");
+        } else {
+          await queueNotification(`Status Updated: ${newStatus}`, file.referenceNumber, file.customerMobile, "");
+        }
+
+        showToast("Workflow status updated & logged");
+        openManageFileModal(fileId);
+      });
+
+      document.getElementById("uploadDocForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById("docFileInput");
+        const rawFile = fileInput.files[0];
+        if (!rawFile) return;
+
+        const allowed = ["pdf", "jpg", "jpeg", "png", "doc", "docx"];
+        const ext = rawFile.name.split(".").pop().toLowerCase();
+        if (!allowed.includes(ext)) {
+          showToast("Unsupported file format. Allowed: PDF, JPG, JPEG, PNG, DOC, DOCX", true);
+          return;
+        }
+
+        const btn = document.getElementById("uploadDocBtn");
+        btn.disabled = true;
+        try {
+          const category = document.getElementById("docCategory").value;
+          const storagePath = `madar_files/${file.referenceNumber}/${Date.now()}_${rawFile.name}`;
+          const storageRef = ref(storage, storagePath);
+          await uploadBytes(storageRef, rawFile);
+          const url = await getDownloadURL(storageRef);
+
+          const updatedAttachments = [
+            ...(file.attachments || []),
+            {
+              name: rawFile.name,
+              category,
+              storagePath,
+              url,
+              uploadedBy: state.profile.name || state.user.email,
+              uploadedAt: new Date().toISOString()
+            }
+          ];
+
+          await updateDoc(doc(db, "files", fileId), { attachments: updatedAttachments, updatedAt: serverTimestamp() });
+          showToast("Document uploaded securely");
+          openManageFileModal(fileId);
+        } catch (err) {
+          showToast(err.message, true);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+
+    // 12. Employee Management
+    function renderEmployees() {
+      document.getElementById("employeesTableBody").innerHTML = state.employees.map((emp) => {
+        const activeCount = state.files.filter((f) => f.assignedEmployeeId === emp.id && !["Customer Delivery", "Payment & File Closure"].includes(f.currentStatus)).length;
+        return `
+          <tr>
+            <td class="font-bold">${escapeHtml(emp.employeeCode)}</td>
+            <td>
+              <div class="font-semi">${escapeHtml(emp.name)}</div>
+              <div class="text-xs text-muted">${escapeHtml(emp.email)}</div>
+            </td>
+            <td>${escapeHtml(emp.designation)} — ${escapeHtml(emp.department)}</td>
+            <td><span class="badge badge-navy">${escapeHtml(emp.role)}</span></td>
+            <td><strong>${activeCount}</strong> assigned</td>
+            <td><span class="badge ${emp.status === "Active" ? "badge-success" : "badge-danger"}">${escapeHtml(emp.status)}</span></td>
+            <td>
+              <button type="button" class="btn btn-outline btn-sm" data-action="toggle-emp-status" data-id="${emp.id}">Toggle Status</button>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="7" class="text-muted">No employees registered yet.</td></tr>`;
+    }
+
+    function openEmployeeModal() {
+      openModal("Register Staff / Translator", `
+        <form id="employeeForm" class="form-grid">
+          <div class="form-group">
+            <label>Employee ID *</label>
+            <input type="text" id="empCode" placeholder="EMP-001" required />
+          </div>
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="empName" required />
+          </div>
+          <div class="form-group">
+            <label>Mobile Number *</label>
+            <input type="tel" id="empMobile" placeholder="+968 9XXXXXXX" required />
+          </div>
+          <div class="form-group">
+            <label>Work Email *</label>
+            <input type="email" id="empEmail" required />
+          </div>
+          <div class="form-group">
+            <label>Designation *</label>
+            <input type="text" id="empDesignation" placeholder="Senior Legal Translator" required />
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="empDept" placeholder="Translation / Attestation" />
+          </div>
+          <div class="form-group">
+            <label>System Role</label>
+            <select id="empRole">
+              <option value="staff">Staff / Translator</option>
+              <option value="admin">Administrator</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">Save Employee Profile</button>
+          </div>
+        </form>
+      `);
+      document.getElementById("employeeForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await addDoc(collection(db, "employees"), {
+          employeeCode: document.getElementById("empCode").value.trim(),
+          name: document.getElementById("empName").value.trim(),
+          mobile: document.getElementById("empMobile").value.trim(),
+          email: document.getElementById("empEmail").value.trim(),
+          designation: document.getElementById("empDesignation").value.trim(),
+          department: document.getElementById("empDept").value.trim(),
+          role: document.getElementById("empRole").value,
+          status: "Active",
+          createdAt: serverTimestamp()
+        });
+        closeModal();
+        showToast("Employee added");
+      });
+    }
+
+    // 13. Quotations & Payments
+    function renderPayments() {
+      document.getElementById("paymentsTableBody").innerHTML = state.payments.map((p) => `
+        <tr>
+          <td class="font-bold">${escapeHtml(p.receiptNumber)}</td>
+          <td>${escapeHtml(p.referenceNumber)}</td>
+          <td>${escapeHtml(p.customerName)}</td>
+          <td>${formatOMR(p.totalAmount)}</td>
+          <td style="color:var(--success);font-weight:700;">${formatOMR(p.paidNow)}</td>
+          <td>${formatOMR(p.remainingBalance)}</td>
+          <td>${escapeHtml(p.paymentMethod)}</td>
+          <td><span class="badge ${p.paymentStatus === "Paid" ? "badge-success" : "badge-warning"}">${escapeHtml(p.paymentStatus)}</span></td>
+          <td><button type="button" class="btn btn-outline btn-sm" data-action="print-receipt" data-id="${p.id}">Print Receipt</button></td>
+        </tr>
+      `).join("") || `<tr><td colspan="9" class="text-muted">No payment or quotation transactions yet.</td></tr>`;
+    }
+
+    function openPaymentModal() {
+      const fileOptions = state.files.map((f) => `<option value="${f.id}">${escapeHtml(f.referenceNumber)} — ${escapeHtml(f.customerName)} (Bal: ${formatOMR(f.balanceAmount)})</option>`).join("");
+      openModal("Create Quotation / Record Payment (OMR)", `
+        <form id="paymentForm" class="form-grid">
+          <div class="form-group full">
+            <label>Select File Reference *</label>
+            <select id="payFileId" required>${fileOptions}</select>
+          </div>
+          <div class="form-group">
+            <label>Service Charges (OMR)</label>
+            <input type="number" step="0.001" id="payServiceCharge" value="0.000" required />
+          </div>
+          <div class="form-group">
+            <label>Additional / Attestation Charges (OMR)</label>
+            <input type="number" step="0.001" id="payExtraCharge" value="0.000" />
+          </div>
+          <div class="form-group">
+            <label>Discount (OMR)</label>
+            <input type="number" step="0.001" id="payDiscount" value="0.000" />
+          </div>
+          <div class="form-group">
+            <label>VAT (%)</label>
+            <input type="number" step="0.1" id="payVat" value="5" />
+          </div>
+          <div class="form-group">
+            <label>Amount Paid Now (OMR)</label>
+            <input type="number" step="0.001" id="payPaidNow" value="0.000" required />
+          </div>
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select id="payMethod">
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer / OmanNet">Bank Transfer / OmanNet</option>
+              <option value="POS Card">POS Card</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-teal">Save Quotation & Issue Receipt</button>
+          </div>
+        </form>
+      `);
+
+      document.getElementById("paymentForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fileId = document.getElementById("payFileId").value;
+        const file = state.files.find((f) => f.id === fileId);
+        if (!file) return;
+
+        const srvChg = Number(document.getElementById("payServiceCharge").value) || 0;
+        const extChg = Number(document.getElementById("payExtraCharge").value) || 0;
+        const disc = Number(document.getElementById("payDiscount").value) || 0;
+        const vatPct = Number(document.getElementById("payVat").value) || 0;
+        const subtotal = Math.max(0, srvChg + extChg - disc);
+        const vatAmt = subtotal * (vatPct / 100);
+        const totalAmt = subtotal + vatAmt;
+
+        const paidNow = Number(document.getElementById("payPaidNow").value) || 0;
+        const totalPaidSoFar = (Number(file.advancePayment) || 0) + paidNow;
+        const effectiveTotal = totalAmt > 0 ? totalAmt : Number(file.quotationAmount) || 0;
+        const remaining = Math.max(0, effectiveTotal - totalPaidSoFar);
+        const payStatus = remaining === 0 && effectiveTotal > 0 ? "Paid" : totalPaidSoFar > 0 ? "Partially Paid" : "Unpaid";
+
+        const receiptNo = `RCP-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
+
+        await addDoc(collection(db, "payments"), {
+          receiptNumber: receiptNo,
+          fileId,
+          referenceNumber: file.referenceNumber,
+          customerName: file.customerName,
+          serviceCharges: srvChg,
+          additionalCharges: extChg,
+          discount: disc,
+          vatPercent: vatPct,
+          totalAmount: effectiveTotal,
+          paidNow,
+          remainingBalance: remaining,
+          paymentMethod: document.getElementById("payMethod").value,
+          paymentStatus: payStatus,
+          paymentDate: new Date().toISOString().slice(0, 10),
+          createdAt: serverTimestamp()
+        });
+
+        await updateDoc(doc(db, "files", fileId), {
+          quotationAmount: effectiveTotal,
+          advancePayment: totalPaidSoFar,
+          balanceAmount: remaining,
+          paymentStatus: payStatus,
+          updatedAt: serverTimestamp()
+        });
+
+        closeModal();
+        showToast(`Receipt ${receiptNo} recorded`);
+      });
+    }
+
+    function printReceipt(paymentId) {
+      const p = state.payments.find((item) => item.id === paymentId);
+      if (!p) return;
+      openModal(`Official Receipt — ${p.receiptNumber}`, `
+        <div id="printableReceipt" style="padding:16px;border:1px solid #cbd5e1;border-radius:8px;">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 style="color:var(--navy-900);">Al Hamad Translation Works</h2>
+              <p class="text-xs text-muted">Sultanate of Oman • MADAR File Tracking System</p>
+            </div>
+            <div style="text-align:end;">
+              <div class="font-bold">RECEIPT: ${escapeHtml(p.receiptNumber)}</div>
+              <div class="text-xs text-muted">Date: ${escapeHtml(p.paymentDate)}</div>
+            </div>
+          </div>
+          <p class="text-sm mb-2"><strong>Customer:</strong> ${escapeHtml(p.customerName)}</p>
+          <p class="text-sm mb-4"><strong>File Reference:</strong> ${escapeHtml(p.referenceNumber)}</p>
+          <table style="width:100%;margin-bottom:14px;">
+            <tr><td>Service & Additional Charges</td><td style="text-align:end;">${formatOMR(p.serviceCharges + p.additionalCharges)}</td></tr>
+            <tr><td>Discount</td><td style="text-align:end;">-${formatOMR(p.discount)}</td></tr>
+            <tr><td>VAT (${p.vatPercent}%)</td><td style="text-align:end;">Included</td></tr>
+            <tr><td><strong>Total Quotation</strong></td><td style="text-align:end;"><strong>${formatOMR(p.totalAmount)}</strong></td></tr>
+            <tr><td><strong>Amount Paid Now (${p.paymentMethod})</strong></td><td style="text-align:end;"><strong>${formatOMR(p.paidNow)}</strong></td></tr>
+            <tr><td>Remaining Balance</td><td style="text-align:end;">${formatOMR(p.remainingBalance)}</td></tr>
+          </table>
+          <button type="button" class="btn btn-primary no-print" onclick="window.print()">Print Official Receipt</button>
+        </div>
+      `);
+    }
+
+    // 15. Customer Tracking Portal
+    document.getElementById("portalLookupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const refNum = document.getElementById("trackRefInput").value.trim().toUpperCase();
+      const mobile = normalizePhone(document.getElementById("trackMobileInput").value);
+
+      try {
+        const qFiles = query(
+          collection(db, "files"),
+          where("referenceNumber", "==", refNum),
+          where("customerMobile", "==", mobile)
+        );
+        const snap = await getDocs(qFiles);
+        if (snap.empty) {
+          showToast("No matching file found for this Reference Number and Mobile Number.", true);
+          return;
+        }
+
+        state.portalPendingFileId = snap.docs[0].id;
+
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(auth, "firebaseRecaptchaContainer", { size: "invisible" });
+        }
+        state.portalConfirmationResult = await signInWithPhoneNumber(auth, mobile, window.recaptchaVerifier);
+        document.getElementById("portalOtpForm").classList.remove("hidden");
+        showToast("OTP verification code sent via SMS");
+      } catch (err) {
+        showToast(`OTP Dispatch Notice: ${err.message}`, true);
+      }
+    });
+
+    document.getElementById("portalOtpForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("portalOtpCode").value.trim();
+      try {
+        await state.portalConfirmationResult.confirm(code);
+        const fileSnap = await getDoc(doc(db, "files", state.portalPendingFileId));
+        if (!fileSnap.exists()) return;
+        const f = fileSnap.data();
+
+        const histSnap = await getDocs(query(collection(db, "file_history"), where("fileId", "==", state.portalPendingFileId)));
+        const timeline = histSnap.docs
+          .map((d) => d.data())
+          .sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+
+        const finalDocs = (f.attachments || []).filter((a) => a.category === "Final Documents");
+
+        const resultBox = document.getElementById("portalResultBox");
+        resultBox.classList.remove("hidden");
+        resultBox.innerHTML = `
+          <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:18px;">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <span class="text-xs text-muted">FILE REFERENCE</span>
+                <h3 style="color:var(--navy-900);">${escapeHtml(f.referenceNumber)}</h3>
+              </div>
+              <span class="badge badge-teal" style="font-size:0.85rem;padding:6px 12px;">${escapeHtml(f.currentStatus)}</span>
+            </div>
+            <div class="form-grid text-sm mb-4">
+              <div><strong>Service:</strong> ${escapeHtml(f.serviceName)}</div>
+              <div><strong>Received Date:</strong> ${escapeHtml(f.receivedDate)}</div>
+              <div><strong>Expected Delivery:</strong> ${escapeHtml(f.expectedDeliveryDate || "TBD")}</div>
+              <div><strong>Payment Summary:</strong> Paid ${formatOMR(f.advancePayment)} / Total ${formatOMR(f.quotationAmount)} (${escapeHtml(f.paymentStatus)})</div>
+            </div>
+
+            ${finalDocs.length ? `
+              <div class="mb-4">
+                <h4 class="text-sm font-bold mb-2">Authorized Final Documents</h4>
+                ${finalDocs.map((d) => `<a href="${d.url}" target="_blank" rel="noopener noreferrer" class="btn btn-teal btn-sm">Download ${escapeHtml(d.name)}</a>`).join(" ")}
+              </div>
+            ` : ""}
+
+            <h4 class="text-sm font-bold mb-2">Progress Timeline</h4>
+            <div class="timeline">
+              ${timeline.map((t) => `
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="text-sm font-bold">${escapeHtml(t.newStatus)}</div>
+                  <div class="text-xs text-muted">${formatTimestamp(t.createdAt)}</div>
+                  ${t.customerRemarks ? `<div class="text-xs mt-2">${escapeHtml(t.customerRemarks)}</div>` : ""}
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        showToast("Invalid OTP code. Please verify and retry.", true);
+      }
+    });
+
+    // 16. Notifications Architecture
+    async function queueNotification(trigger, fileRef, recipientPhone, recipientEmail) {
+      if (!state.settings.notifyEnabled) return;
+      const channels = ["WhatsApp", "SMS"];
+      if (recipientEmail) channels.push("Email");
+
+      for (const ch of channels) {
+        await addDoc(collection(db, "notifications"), {
+          channel: ch,
+          recipient: ch === "Email" ? recipientEmail : (recipientPhone || "N/A"),
+          trigger,
+          fileRef,
+          status: "Queued for Cloud Function",
+          createdAt: serverTimestamp()
+        });
+      }
+    }
+
+    function renderNotifications() {
+      const tbody = document.getElementById("notificationsTableBody");
+      if (!tbody) return;
+      tbody.innerHTML = state.notifications.map((n) => `
+        <tr>
+          <td>${formatTimestamp(n.createdAt)}</td>
+          <td><span class="badge badge-navy">${escapeHtml(n.channel)}</span></td>
+          <td>${escapeHtml(n.recipient)}</td>
+          <td>${escapeHtml(n.trigger)}</td>
+          <td>${escapeHtml(n.fileRef)}</td>
+          <td><span class="badge badge-info">${escapeHtml(n.status)}</span></td>
+        </tr>
+      `).join("") || `<tr><td colspan="6" class="text-muted">No queued notifications.</td></tr>`;
+    }
+
+    // 17. Reports
+    function renderReports() {
+      const box = document.getElementById("reportsSummaryContainer");
+      if (!box) return;
+      const totalBilled = state.files.reduce((s, f) => s + (Number(f.quotationAmount) || 0), 0);
+      const totalCollected = state.files.reduce((s, f) => s + (Number(f.advancePayment) || 0), 0);
+      const totalPending = state.files.reduce((s, f) => s + (Number(f.balanceAmount) || 0), 0);
+
+      box.innerHTML = `
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Total Billed (OMR)</div><div class="kpi-value">${formatOMR(totalBilled)}</div></div>
+          <div class="kpi-card success"><div class="kpi-label">Total Collected (OMR)</div><div class="kpi-value">${formatOMR(totalCollected)}</div></div>
+          <div class="kpi-card warning"><div class="kpi-label">Total Receivables (OMR)</div><div class="kpi-value">${formatOMR(totalPending)}</div></div>
+        </div>
+      `;
+    }
+
+    function exportFilesToCSV() {
+      const headers = ["Reference Number", "Customer", "Mobile", "Service", "Title", "Received", "Expected Delivery", "Status", "Total OMR", "Paid OMR", "Balance OMR"];
+      const rows = state.files.map((f) => [
+        f.referenceNumber, f.customerName, f.customerMobile, f.serviceName, f.fileTitle,
+        f.receivedDate, f.expectedDeliveryDate, f.currentStatus, f.quotationAmount, f.advancePayment, f.balanceAmount
+      ]);
+      const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `MADAR_Files_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
+    }
+
+    // 18. Arabic Language & RTL
+    const I18N = {
+      en: {
+        navDashboard: "Dashboard",
+        navFiles: "File Registration & Tracking",
+        navCustomers: "Customer Management",
+        navPayments: "Quotations & Payments",
+        navServices: "Service Categories",
+        navEmployees: "Employee Management",
+        navReports: "Reports & Exports",
+        navSettings: "Settings & Notifications",
+        logoutBtn: "Secure Logout",
+        signInBtn: "Sign In to Workspace",
+        trackPortalBtn: "Open Customer Tracking Portal",
+        staffLoginBtn: "Staff Login"
+      },
+      ar: {
+        navDashboard: "لوحة التحكم",
+        navFiles: "تسجيل ومتابعة الملفات",
+        navCustomers: "إدارة العملاء",
+        navPayments: "عروض الأسعار والمدفوعات",
+        navServices: "فئات الخدمات",
+        navEmployees: "إدارة الموظفين",
+        navReports: "التقارير والتصدير",
+        navSettings: "الإعدادات والإشعارات",
+        logoutBtn: "تسجيل خروج آمن",
+        signInBtn: "تسجيل الدخول للنظام",
+        trackPortalBtn: "بوابة تتبع العملاء",
+        staffLoginBtn: "دخول الموظفين"
+      }
+    };
+
+    function toggleLanguage() {
+      state.lang = state.lang === "en" ? "ar" : "en";
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.dataset.i18n;
+        if (I18N[state.lang][key]) el.textContent = I18N[state.lang][key];
+      });
+    }
+
+    // 19. PWA Installation
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      state.deferredInstallPrompt = e;
+      document.getElementById("pwaInstallBtn")?.classList.remove("hidden");
+    });
+
+    async function installPWA() {
+      if (!state.deferredInstallPrompt) return;
+      state.deferredInstallPrompt.prompt();
+      await state.deferredInstallPrompt.userChoice;
+      state.deferredInstallPrompt = null;
+      document.getElementById("pwaInstallBtn")?.classList.add("hidden");
+    }
+
+    // 20. Utility Functions & Global Event Delegation
+    function formatOMR(val) {
+      return `${(Number(val) || 0).toFixed(3)} OMR`;
+    }
+
+    function normalizePhone(phone) {
+      const cleaned = (phone || "").replace(/[^\d+]/g, "");
+      if (cleaned.startsWith("+")) return cleaned;
+      if (cleaned.startsWith("968")) return `+${cleaned}`;
+      return `+968${cleaned}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatTimestamp(ts) {
+      if (!ts) return "Just now";
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      return d.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" });
+    }
+
+    function showToast(msg, isError = false) {
+      const el = document.createElement("div");
+      el.className = `toast ${isError ? "error" : ""}`;
+      el.textContent = msg;
+      document.getElementById("toastContainer").appendChild(el);
+      setTimeout(() => el.remove(), 4500);
+    }
+
+    function openModal(title, html) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalBody").innerHTML = html;
+      document.getElementById("appModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("appModal").classList.add("hidden");
+    }
+
+    document.addEventListener("click", async (e) => {
+      const navBtn = e.target.closest("[data-nav]");
+      if (navBtn) {
+        switchModule(navBtn.dataset.nav);
+        return;
+      }
+
+      const jumpBtn = e.target.closest("[data-nav-jump]");
+      if (jumpBtn) {
+        switchModule(jumpBtn.dataset.navJump);
+        return;
+      }
+
+      const sortTh = e.target.closest("th[data-sort]");
+      if (sortTh) {
+        const key = sortTh.dataset.sort;
+        state.fileFilter.sortAsc = state.fileFilter.sortKey === key ? !state.fileFilter.sortAsc : true;
+        state.fileFilter.sortKey = key;
+        renderFiles();
+        return;
+      }
+
+      const actionEl = e.target.closest("[data-action]");
+      if (!actionEl) return;
+      const action = actionEl.dataset.action;
+      const id = actionEl.dataset.id;
+
+      switch (action) {
+        case "toggle-lang": toggleLanguage(); break;
+        case "logout": await handleLogout(); break;
+        case "open-customer-portal":
+          window.location.hash = "track";
+          showView("customerPortalView");
+          break;
+        case "copy-tracking-link": {
+          const shareUrl = `${window.location.origin}${window.location.pathname}?track=1`;
+          await navigator.clipboard?.writeText(shareUrl);
+          showToast("Customer tracking URL copied to clipboard");
+          break;
+        }
+        case "show-staff-login":
+          window.location.hash = "";
+          if (window.location.search) {
+            window.history.replaceState({}, "", window.location.pathname);
+          }
+          showView(state.user ? "workspaceView" : "loginView");
+          break;
+        case "toggle-sidebar":
+          document.getElementById("appSidebar").classList.toggle("open");
+          break;
+        case "close-modal": closeModal(); break;
+        case "install-pwa": await installPWA(); break;
+        case "open-customer-modal": openCustomerModal(); break;
+        case "edit-customer":
+          openCustomerModal(state.customers.find((c) => c.id === id));
+          break;
+        case "view-customer": viewCustomerHistory(id); break;
+        case "delete-customer":
+          if (confirm("Delete this customer permanently?")) {
+            await deleteDoc(doc(db, "customers", id));
+            showToast("Customer deleted");
+          }
+          break;
+        case "open-new-file-modal": openNewFileModal(); break;
+        case "manage-file": await openManageFileModal(id); break;
+        case "open-payment-modal": openPaymentModal(); break;
+        case "print-receipt": printReceipt(id); break;
+        case "open-service-modal": openServiceModal(); break;
+        case "toggle-service": {
+          const srv = state.services.find((s) => s.id === id);
+          if (srv) await updateDoc(doc(db, "services", id), { active: !srv.active });
+          break;
+        }
+        case "open-employee-modal": openEmployeeModal(); break;
+        case "toggle-emp-status": {
+          const emp = state.employees.find((em) => em.id === id);
+          if (emp) await updateDoc(doc(db, "employees", id), { status: emp.status === "Active" ? "Inactive" : "Active" });
+          break;
+        }
+        case "export-files-csv": exportFilesToCSV(); break;
+        case "print-page": window.print(); break;
+      }
+    });
+
+    document.getElementById("fileSearchInput")?.addEventListener("input", (e) => {
+      state.fileFilter.search = e.target.value;
+      state.fileFilter.page = 1;
+      renderFiles();
+    });
+    document.getElementById("fileStatusFilter")?.addEventListener("change", (e) => {
+      state.fileFilter.status = e.target.value;
+      state.fileFilter.page = 1;
+      renderFiles();
+    });
+    document.getElementById("fileServiceFilter")?.addEventListener("change", (e) => {
+      state.fileFilter.service = e.target.value;
+      state.fileFilter.page = 1;
+      renderFiles();
+    });
+    document.getElementById("filePriorityFilter")?.addEventListener("change", (e) => {
+      state.fileFilter.priority = e.target.value;
+      state.fileFilter.page = 1;
+      renderFiles();
+    });
+    document.getElementById("filesPrevPage")?.addEventListener("click", () => {
+      if (state.fileFilter.page > 1) { state.fileFilter.page--; renderFiles(); }
+    });
+    document.getElementById("filesNextPage")?.addEventListener("click", () => {
+      state.fileFilter.page++;
+      renderFiles();
+    });
+    document.getElementById("customerSearchInput")?.addEventListener("input", renderCustomers);
+
+    document.getElementById("appSettingsForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      state.settings = {
+        orgName: document.getElementById("setOrgName").value,
+        defaultVat: Number(document.getElementById("setDefaultVat").value),
+        notifyEnabled: document.getElementById("setNotifyEnabled").value === "true"
+      };
+      await setDoc(doc(db, "app_settings", "general"), { ...state.settings, updatedAt: serverTimestamp() }, { merge: true });
+      showToast("System settings saved");
+    });
+  </script>
+</body>
+</html>
