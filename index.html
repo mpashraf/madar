@@ -592,6 +592,55 @@
     .workflow-stage-10{background:#e9edf0!important;color:#46535e!important;border-color:#d1d9df!important}
     .workflow-stage-unknown{background:#eef0f2!important;color:#4b5563!important;border-color:#d9dee3!important}
 
+
+    /* Compact dashboard: less chrome, more operational data in the first view */
+    #view-dashboard .kpi-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+    #view-dashboard .kpi-card {
+      min-height: 78px;
+      padding: 10px 12px 9px 14px;
+      border-radius: 10px;
+    }
+    #view-dashboard .kpi-label { font-size: .66rem; letter-spacing: .035em; }
+    #view-dashboard .kpi-icon { width: 27px; height: 27px; flex-basis: 27px; border-radius: 8px; }
+    #view-dashboard .kpi-icon svg { width: 15px; height: 15px; }
+    #view-dashboard .kpi-value { font-size: 1.28rem; margin-top: 4px; }
+    #view-dashboard .dashboard-split {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+    }
+    #view-dashboard .card { padding: 12px 14px; border-radius: 11px; }
+    #view-dashboard .card-header {
+      margin-bottom: 9px;
+      padding-bottom: 7px;
+      gap: 7px;
+    }
+    #view-dashboard .card-title { font-size: .91rem; }
+    #view-dashboard .table-wrap { border-radius: 7px; }
+    #view-dashboard table { font-size: .76rem; }
+    #view-dashboard th { padding: 7px 9px; }
+    #view-dashboard td { padding: 6px 9px; }
+    #view-dashboard .badge { padding: 2px 7px; font-size: .67rem; }
+    #view-dashboard #dashServiceStatsBox > div { padding: 4px 0 !important; font-size: .78rem; }
+    #view-dashboard #dashTodayActivitiesBox { font-size: .76rem; line-height: 1.4; }
+    #view-dashboard #dashTodayActivitiesBox > div { padding: 4px 0 !important; }
+    @media (max-width: 1200px) {
+      #view-dashboard .kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 960px) {
+      #view-dashboard .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #view-dashboard .dashboard-split { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      #view-dashboard .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      #view-dashboard .kpi-card { min-height: 72px; padding: 9px 10px 8px 12px; }
+      #view-dashboard .kpi-value { font-size: 1.18rem; }
+      #view-dashboard .card { padding: 11px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1462,7 +1511,7 @@
         .map((k, i) => `<div class="kpi-card ${k.cls}"><div class="kpi-topline"><div class="kpi-label">${k.label}</div><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${kpiIcons[i]}</svg></span></div><div class="kpi-value">${k.val}</div></div>`)
         .join("");
 
-      document.getElementById("dashRecentFilesBody").innerHTML = state.files.slice(0, 6).map((f) => `
+      document.getElementById("dashRecentFilesBody").innerHTML = state.files.slice(0, 8).map((f) => `
         <tr>
           <td class="font-bold">${escapeHtml(f.referenceNumber)}</td>
           <td>${escapeHtml(f.customerName)}</td>
@@ -1475,7 +1524,7 @@
       const upcoming = [...state.files]
         .filter((f) => !["Customer Delivery", "Payment & File Closure"].includes(f.currentStatus))
         .sort((a, b) => (a.expectedDeliveryDate || "9999").localeCompare(b.expectedDeliveryDate || "9999"))
-        .slice(0, 6);
+        .slice(0, 8);
 
       document.getElementById("dashDeadlinesBody").innerHTML = upcoming.map((f) => `
         <tr>
@@ -1486,7 +1535,7 @@
         </tr>
       `).join("") || `<tr><td colspan="4" class="text-muted">No active deadlines.</td></tr>`;
 
-      const pendingList = state.files.filter((f) => Number(f.balanceAmount) > 0).slice(0, 6);
+      const pendingList = state.files.filter((f) => Number(f.balanceAmount) > 0).slice(0, 8);
       document.getElementById("dashPendingPayBody").innerHTML = pendingList.map((f) => `
         <tr>
           <td class="font-bold">${escapeHtml(f.referenceNumber)}</td>
@@ -1504,7 +1553,7 @@
         .map(([srv, cnt]) => `<div class="flex justify-between text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);"><span>${escapeHtml(srv)}</span><strong>${cnt} files</strong></div>`)
         .join("") || `<p class="text-sm text-muted">No service activity recorded yet.</p>`;
 
-      const todayActs = state.notifications.slice(0, 5);
+      const todayActs = state.notifications.slice(0, 8);
       document.getElementById("dashTodayActivitiesBox").innerHTML = todayActs
         .map((n) => `<div style="padding:5px 0;border-bottom:1px dashed var(--border);">• <strong>${escapeHtml(n.fileRef || "")}</strong>: ${escapeHtml(n.trigger)} (${escapeHtml(n.channel)})</div>`)
         .join("") || "No activity logs recorded today.";
