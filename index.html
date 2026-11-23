@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#0b1f3a" />
   <meta name="description" content="MADAR (مدار) - Smart Document & File Tracking Management System for Al Hamad Translation Works, Oman." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b1f3a'/%3E%3Ctext x='50' y='67' font-family='Arial,sans-serif' font-size='54' font-weight='bold' fill='%2314b8a6' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
-  <link rel="manifest" href='data:application/manifest+json,{"name":"MADAR - Smart Document & File Tracking","short_name":"MADAR مدار","start_url":"./","scope":"./","display":"standalone","background_color":"#0b1f3a","theme_color":"#0b1f3a","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27%3E%3Crect width=%27512%27 height=%27512%27 rx=%2796%27 fill=%27%230b1f3a%27/%3E%3Ctext x=%27256%27 y=%27335%27 font-family=%27Arial,sans-serif%27 font-size=%27270%27 font-weight=%27bold%27 fill=%27%2314b8a6%27 text-anchor=%27middle%27%3EM%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}' />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -414,7 +413,7 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- 1. PUBLIC CUSTOMER TRACKING PORTAL -->
+  <!-- 1. PUBLIC CUSTOMER TRACKING PORTAL (DEMO DIRECT LOOKUP) -->
   <section id="customerPortalView" class="public-wrapper hidden">
     <div class="portal-card">
       <div class="flex justify-between items-center mb-4" style="border-bottom:1px solid var(--border);padding-bottom:14px;">
@@ -442,21 +441,7 @@
           <input type="tel" id="trackMobileInput" placeholder="+968 9XXXXXXX" required />
         </div>
         <div class="form-group full">
-          <button type="submit" class="btn btn-teal" data-i18n="requestOtpBtn">Request OTP Verification</button>
-        </div>
-      </form>
-
-      <form id="portalOtpForm" class="form-grid hidden mt-4" style="background:var(--teal-50);padding:16px;border-radius:8px;border:1px solid var(--teal-100);">
-        <div class="form-group full">
-          <p class="text-sm font-semi" style="color:var(--navy-900);" id="otpSentMessage">Enter the 6-digit verification code sent to your registered mobile.</p>
-          <div id="firebaseRecaptchaContainer"></div>
-        </div>
-        <div class="form-group">
-          <label for="portalOtpCode">6-Digit OTP Code</label>
-          <input type="text" id="portalOtpCode" maxlength="6" placeholder="123456" required />
-        </div>
-        <div class="form-group" style="justify-content:flex-end;">
-          <button type="submit" class="btn btn-primary">Verify & View File</button>
+          <button type="submit" class="btn btn-teal">Track File Status</button>
         </div>
       </form>
 
@@ -484,13 +469,13 @@
 
       <div style="background:#f8fafc;padding:10px 12px;border-radius:6px;margin-bottom:18px;border:1px solid var(--border);">
         <div class="text-xs font-bold" style="color:var(--navy-900);">Al Hamad Translation Works, Oman</div>
-        <div class="text-xs text-muted">Authorized Administrator & Staff Portal</div>
+        <div class="text-xs text-muted">Authorized Workspace Portal (Demo)</div>
       </div>
 
       <form id="loginForm" class="flex" style="flex-direction:column;gap:14px;">
         <div class="form-group">
           <label for="loginEmail" data-i18n="emailLabel">Work Email</label>
-          <input type="email" id="loginEmail" placeholder="admin@alhamadtranslation.om" required />
+          <input type="email" id="loginEmail" value="mpashraf323@gmail.com" placeholder="mpashraf323@gmail.com" required />
         </div>
         <div class="form-group">
           <label for="loginPassword" data-i18n="passwordLabel">Password</label>
@@ -528,20 +513,20 @@
         <button type="button" class="nav-item" data-nav="files" data-i18n="navFiles">File Registration & Tracking</button>
         <button type="button" class="nav-item" data-nav="customers" data-i18n="navCustomers">Customer Management</button>
         <button type="button" class="nav-item" data-nav="quotations" data-i18n="navPayments">Quotations & Payments</button>
-        <button type="button" class="nav-item admin-only" data-nav="services" data-i18n="navServices">Service Categories</button>
-        <button type="button" class="nav-item admin-only" data-nav="employees" data-i18n="navEmployees">Employee Management</button>
+        <button type="button" class="nav-item" data-nav="services" data-i18n="navServices">Service Categories</button>
+        <button type="button" class="nav-item" data-nav="employees" data-i18n="navEmployees">Employee Management</button>
         <button type="button" class="nav-item" data-nav="reports" data-i18n="navReports">Reports & Exports</button>
-        <button type="button" class="nav-item admin-only" data-nav="settings" data-i18n="navSettings">Settings & Notifications</button>
+        <button type="button" class="nav-item" data-nav="settings" data-i18n="navSettings">Settings & Notifications</button>
       </nav>
 
       <div class="sidebar-footer">
         <div id="currentUserBadge" class="font-semi" style="color:#fff;margin-bottom:4px;">User</div>
-        <div id="currentRoleBadge" class="text-xs" style="color:var(--teal-500);margin-bottom:10px;">Role</div>
+        <div id="currentRoleBadge" class="text-xs" style="color:var(--teal-500);margin-bottom:10px;">DEMO ADMIN</div>
         <button type="button" id="pwaInstallBtn" class="btn btn-teal btn-sm hidden" style="width:100%;margin-bottom:8px;" data-action="install-pwa">
           Install MADAR App
         </button>
         <button type="button" class="btn btn-outline btn-sm" style="width:100%;background:transparent;color:#fff;border-color:rgba(255,255,255,0.2);" data-action="logout" data-i18n="logoutBtn">
-          Secure Logout
+          Logout
         </button>
       </div>
     </aside>
@@ -887,9 +872,7 @@
       getAuth,
       signInWithEmailAndPassword,
       signOut,
-      onAuthStateChanged,
-      RecaptchaVerifier,
-      signInWithPhoneNumber
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
     import {
       getFirestore,
@@ -970,11 +953,10 @@
       settings: { orgName: "Al Hamad Translation Works, Oman", defaultVat: 5, notifyEnabled: true },
       fileFilter: { search: "", status: "", service: "", priority: "", sortKey: "createdAt", sortAsc: false, page: 1, pageSize: 12 },
       deferredInstallPrompt: null,
-      portalConfirmationResult: null,
-      portalPendingFileId: null
+      listenersAttached: false
     };
 
-    // 4. Authentication
+    // 4. Simple Email/Password Authentication for Demo
     onAuthStateChanged(auth, async (firebaseUser) => {
       const urlParams = new URLSearchParams(window.location.search);
       const isTrackRoute = window.location.hash === "#track" || urlParams.get("track") === "1";
@@ -993,38 +975,29 @@
         return;
       }
 
-      if (firebaseUser.isAnonymous || (!firebaseUser.email && firebaseUser.phoneNumber)) {
-        return;
-      }
-
       state.user = firebaseUser;
-      const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
-      if (userSnap.exists()) {
-        state.profile = userSnap.data();
-      } else {
-        state.profile = {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          name: firebaseUser.email.split("@")[0],
-          role: "admin",
-          status: "Active",
-          createdAt: serverTimestamp()
-        };
-        await setDoc(doc(db, "users", firebaseUser.uid), state.profile);
-      }
+      state.profile = {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || "Demo User",
+        name: (firebaseUser.email || "Demo Admin").split("@")[0],
+        role: "admin",
+        status: "Active"
+      };
 
-      if (state.profile.status === "Inactive") {
-        await signOut(auth);
-        showToast("Account deactivated. Contact Administrator.", true);
-        return;
-      }
-
-      applyRolePermissions();
-      document.getElementById("currentUserBadge").textContent = state.profile.name || firebaseUser.email;
-      document.getElementById("currentRoleBadge").textContent = state.profile.role.toUpperCase();
+      document.getElementById("currentUserBadge").textContent = state.profile.email;
+      document.getElementById("currentRoleBadge").textContent = "DEMO WORKSPACE";
       showView("workspaceView");
-      await seedInitialServicesIfEmpty();
-      attachRealtimeListeners();
+
+      try {
+        await seedInitialServicesIfEmpty();
+      } catch (e) {
+        console.warn("Seed skipped:", e.message);
+      }
+
+      if (!state.listenersAttached) {
+        state.listenersAttached = true;
+        attachRealtimeListeners();
+      }
     });
 
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -1035,13 +1008,9 @@
       btn.disabled = true;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-        showToast("Welcome to MADAR Workspace");
+        showToast("Welcome to MADAR Demo Workspace");
       } catch (err) {
-        if (err.code === "auth/unauthorized-domain") {
-          showToast(`Add "${window.location.hostname}" to Firebase Auth > Settings > Authorized domains.`, true);
-        } else {
-          showToast(err.message || "Authentication failed", true);
-        }
+        showToast(err.message || "Authentication failed", true);
       } finally {
         btn.disabled = false;
       }
@@ -1049,21 +1018,14 @@
 
     async function handleLogout() {
       await signOut(auth);
-      showToast("Signed out securely");
+      showToast("Signed out");
     }
 
-    // 5. Role & Permission Management
     function isAdmin() {
-      return state.profile?.role === "admin";
+      return true;
     }
 
-    function applyRolePermissions() {
-      document.querySelectorAll(".admin-only").forEach((el) => {
-        el.classList.toggle("hidden", !isAdmin());
-      });
-    }
-
-    // 6. Navigation
+    // 5. Navigation
     function showView(viewId) {
       ["loginView", "customerPortalView", "workspaceView"].forEach((id) => {
         document.getElementById(id).classList.toggle("hidden", id !== viewId);
@@ -1071,10 +1033,6 @@
     }
 
     function switchModule(modName) {
-      if ((modName === "services" || modName === "employees" || modName === "settings") && !isAdmin()) {
-        showToast("Administrator privileges required", true);
-        return;
-      }
       state.currentModule = modName;
       document.querySelectorAll(".module-view").forEach((sec) => {
         sec.classList.toggle("hidden", sec.id !== `view-${modName}`);
@@ -1089,7 +1047,7 @@
       document.getElementById("appSidebar").classList.remove("open");
     }
 
-    // 7. Dashboard
+    // 6. Dashboard & Realtime Listeners
     function attachRealtimeListeners() {
       onSnapshot(collection(db, "customers"), (snap) => {
         state.customers = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -1105,11 +1063,7 @@
       });
 
       onSnapshot(query(collection(db, "files"), orderBy("createdAt", "desc")), (snap) => {
-        let allFiles = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (!isAdmin() && state.profile?.employeeId) {
-          allFiles = allFiles.filter((f) => f.assignedEmployeeId === state.profile.employeeId || f.createdBy === state.user.uid);
-        }
-        state.files = allFiles;
+        state.files = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         renderFiles();
         renderDashboard();
         renderEmployees();
@@ -1211,7 +1165,7 @@
         .join("") || "No activity logs recorded today.";
     }
 
-    // 8. Customer Management
+    // 7. Customer Management
     function renderCustomers() {
       const term = (document.getElementById("customerSearchInput")?.value || "").toLowerCase();
       const filtered = state.customers.filter((c) =>
@@ -1236,7 +1190,7 @@
             <div class="flex gap-2">
               <button type="button" class="btn btn-outline btn-sm" data-action="view-customer" data-id="${c.id}">History</button>
               <button type="button" class="btn btn-outline btn-sm" data-action="edit-customer" data-id="${c.id}">Edit</button>
-              ${isAdmin() ? `<button type="button" class="btn btn-danger btn-sm" data-action="delete-customer" data-id="${c.id}">Delete</button>` : ""}
+              <button type="button" class="btn btn-danger btn-sm" data-action="delete-customer" data-id="${c.id}">Delete</button>
             </div>
           </td>
         </tr>
@@ -1338,10 +1292,10 @@
       `);
     }
 
-    // 9. Service Management
+    // 8. Service Management
     async function seedInitialServicesIfEmpty() {
       const snap = await getDocs(collection(db, "services"));
-      if (snap.empty && isAdmin()) {
+      if (snap.empty) {
         for (const s of DEFAULT_SERVICES) {
           await setDoc(doc(db, "services", s.id), { ...s, createdAt: serverTimestamp() });
         }
@@ -1414,7 +1368,7 @@
       });
     }
 
-    // 10. File Management
+    // 9. File Management
     async function generateNextFileReference() {
       const year = new Date().getFullYear();
       const counterRef = doc(db, "app_settings", `file_counter_${year}`);
@@ -1632,7 +1586,7 @@
       });
     }
 
-    // 11. File Status & History + 14. Document Upload
+    // 10. File Status & History + Document Upload
     async function openManageFileModal(fileId) {
       const file = state.files.find((f) => f.id === fileId);
       if (!file) return;
@@ -1677,13 +1631,13 @@
             <input type="text" id="wfIntRemarks" placeholder="Confidential internal note..." />
           </div>
           <div class="form-group full">
-            <button type="submit" class="btn btn-primary">Record Status Update (Immutable History)</button>
+            <button type="submit" class="btn btn-primary">Record Status Update</button>
           </div>
         </form>
 
         <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;" />
 
-        <h4 class="font-bold mb-2">Secure Document Repository (Firebase Storage)</h4>
+        <h4 class="font-bold mb-2">Document Repository (Firebase Storage)</h4>
         <form id="uploadDocForm" class="form-grid mb-4">
           <div class="form-group">
             <label>Document Category</label>
@@ -1699,7 +1653,7 @@
             <input type="file" id="docFileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required />
           </div>
           <div class="form-group full">
-            <button type="submit" id="uploadDocBtn" class="btn btn-teal btn-sm">Upload Authorized Document</button>
+            <button type="submit" id="uploadDocBtn" class="btn btn-teal btn-sm">Upload Document</button>
           </div>
         </form>
 
@@ -1707,7 +1661,7 @@
           ${(file.attachments || []).map((att) => `
             <div class="flex justify-between items-center text-sm" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
               <span><span class="badge badge-navy">${escapeHtml(att.category)}</span> ${escapeHtml(att.name)}</span>
-              <a href="${att.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Open Secure File</a>
+              <a href="${att.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Open File</a>
             </div>
           `).join("") || `<p class="text-xs text-muted">No documents uploaded yet.</p>`}
         </div>
@@ -1799,7 +1753,7 @@
           ];
 
           await updateDoc(doc(db, "files", fileId), { attachments: updatedAttachments, updatedAt: serverTimestamp() });
-          showToast("Document uploaded securely");
+          showToast("Document uploaded");
           openManageFileModal(fileId);
         } catch (err) {
           showToast(err.message, true);
@@ -1809,7 +1763,7 @@
       });
     }
 
-    // 12. Employee Management
+    // 11. Employee Management
     function renderEmployees() {
       document.getElementById("employeesTableBody").innerHTML = state.employees.map((emp) => {
         const activeCount = state.files.filter((f) => f.assignedEmployeeId === emp.id && !["Customer Delivery", "Payment & File Closure"].includes(f.currentStatus)).length;
@@ -1889,7 +1843,7 @@
       });
     }
 
-    // 13. Quotations & Payments
+    // 12. Quotations & Payments
     function renderPayments() {
       document.getElementById("paymentsTableBody").innerHTML = state.payments.map((p) => `
         <tr>
@@ -2031,7 +1985,7 @@
       `);
     }
 
-    // 15. Customer Tracking Portal
+    // 13. Customer Tracking Portal (Direct Lookup for Demo)
     document.getElementById("portalLookupForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const refNum = document.getElementById("trackRefInput").value.trim().toUpperCase();
@@ -2049,29 +2003,10 @@
           return;
         }
 
-        state.portalPendingFileId = snap.docs[0].id;
+        const fileDoc = snap.docs[0];
+        const f = fileDoc.data();
 
-        if (!window.recaptchaVerifier) {
-          window.recaptchaVerifier = new RecaptchaVerifier(auth, "firebaseRecaptchaContainer", { size: "invisible" });
-        }
-        state.portalConfirmationResult = await signInWithPhoneNumber(auth, mobile, window.recaptchaVerifier);
-        document.getElementById("portalOtpForm").classList.remove("hidden");
-        showToast("OTP verification code sent via SMS");
-      } catch (err) {
-        showToast(`OTP Dispatch Notice: ${err.message}`, true);
-      }
-    });
-
-    document.getElementById("portalOtpForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const code = document.getElementById("portalOtpCode").value.trim();
-      try {
-        await state.portalConfirmationResult.confirm(code);
-        const fileSnap = await getDoc(doc(db, "files", state.portalPendingFileId));
-        if (!fileSnap.exists()) return;
-        const f = fileSnap.data();
-
-        const histSnap = await getDocs(query(collection(db, "file_history"), where("fileId", "==", state.portalPendingFileId)));
+        const histSnap = await getDocs(query(collection(db, "file_history"), where("fileId", "==", fileDoc.id)));
         const timeline = histSnap.docs
           .map((d) => d.data())
           .sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
@@ -2098,7 +2033,7 @@
 
             ${finalDocs.length ? `
               <div class="mb-4">
-                <h4 class="text-sm font-bold mb-2">Authorized Final Documents</h4>
+                <h4 class="text-sm font-bold mb-2">Final Documents</h4>
                 ${finalDocs.map((d) => `<a href="${d.url}" target="_blank" rel="noopener noreferrer" class="btn btn-teal btn-sm">Download ${escapeHtml(d.name)}</a>`).join(" ")}
               </div>
             ` : ""}
@@ -2117,11 +2052,11 @@
           </div>
         `;
       } catch (err) {
-        showToast("Invalid OTP code. Please verify and retry.", true);
+        showToast(err.message || "Unable to fetch file status.", true);
       }
     });
 
-    // 16. Notifications Architecture
+    // 14. Notifications Architecture
     async function queueNotification(trigger, fileRef, recipientPhone, recipientEmail) {
       if (!state.settings.notifyEnabled) return;
       const channels = ["WhatsApp", "SMS"];
@@ -2154,7 +2089,7 @@
       `).join("") || `<tr><td colspan="6" class="text-muted">No queued notifications.</td></tr>`;
     }
 
-    // 17. Reports
+    // 15. Reports
     function renderReports() {
       const box = document.getElementById("reportsSummaryContainer");
       if (!box) return;
@@ -2185,7 +2120,7 @@
       link.click();
     }
 
-    // 18. Arabic Language & RTL
+    // 16. Arabic Language & RTL
     const I18N = {
       en: {
         navDashboard: "Dashboard",
@@ -2196,7 +2131,7 @@
         navEmployees: "Employee Management",
         navReports: "Reports & Exports",
         navSettings: "Settings & Notifications",
-        logoutBtn: "Secure Logout",
+        logoutBtn: "Logout",
         signInBtn: "Sign In to Workspace",
         trackPortalBtn: "Open Customer Tracking Portal",
         staffLoginBtn: "Staff Login"
@@ -2210,7 +2145,7 @@
         navEmployees: "إدارة الموظفين",
         navReports: "التقارير والتصدير",
         navSettings: "الإعدادات والإشعارات",
-        logoutBtn: "تسجيل خروج آمن",
+        logoutBtn: "تسجيل خروج",
         signInBtn: "تسجيل الدخول للنظام",
         trackPortalBtn: "بوابة تتبع العملاء",
         staffLoginBtn: "دخول الموظفين"
@@ -2227,7 +2162,7 @@
       });
     }
 
-    // 19. PWA Installation
+    // 17. PWA Installation
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       state.deferredInstallPrompt = e;
@@ -2242,7 +2177,7 @@
       document.getElementById("pwaInstallBtn")?.classList.add("hidden");
     }
 
-    // 20. Utility Functions & Global Event Delegation
+    // 18. Utility Functions & Global Event Delegation
     function formatOMR(val) {
       return `${(Number(val) || 0).toFixed(3)} OMR`;
     }
