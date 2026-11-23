@@ -901,7 +901,7 @@
 
     // 1. Firebase Configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyDM7T2a_2jnoGWMMAbqwRIp5GH0wCvvY8",
+      apiKey: "AIzaSyDM7T2a_2jnoGWMMAbqwRIp5GH0wCvvn_Y",
       authDomain: "madar-aed4e.firebaseapp.com",
       projectId: "madar-aed4e",
       storageBucket: "madar-aed4e.firebasestorage.app",
@@ -976,12 +976,13 @@
       }
 
       state.user = firebaseUser;
+      // Demo access: Firebase Authentication is the only sign-in check.
+      // Any account created/enabled in this Firebase project's Authentication
+      // users list can sign in with its valid email and password.
       state.profile = {
         uid: firebaseUser.uid,
         email: firebaseUser.email || "Demo User",
-        name: (firebaseUser.email || "Demo Admin").split("@")[0],
-        role: "admin",
-        status: "Active"
+        name: (firebaseUser.email || "Demo User").split("@")[0]
       };
 
       document.getElementById("currentUserBadge").textContent = state.profile.email;
@@ -1019,10 +1020,6 @@
     async function handleLogout() {
       await signOut(auth);
       showToast("Signed out");
-    }
-
-    function isAdmin() {
-      return true;
     }
 
     // 5. Navigation
